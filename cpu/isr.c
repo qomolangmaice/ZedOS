@@ -1,9 +1,9 @@
 #include "isr.h" 
 #include "idt.h" 
 #include "../libc/types.h" 
-#include "../libc/system.h" 
 #include "../libc/string.h" 
-#include "../libc/printk/debug.h" 
+#include "../libc/printf.h" 
+#include "../drivers/screen.h" 
 
 void isr_memset()
 {
@@ -55,7 +55,7 @@ void isr_handler(pt_regs_t *regs)
 	}
 	else
 	{
-		printk_color(rc_black, rc_blue, "Unhandled interrupt: [%d]\n", regs->int_no); 
+		printf("Unhandled interrupt: [%d]\n", regs->int_no); 
 	}
 }
 

@@ -28,7 +28,6 @@ int cursor_x, cursor_y;
 // clear all lines from "startline" to "endline" in the screen    
 void clear_line(uint8 startline, uint8 endline);  
 
-// I'm puzzled with this function @_@   
 void update_cursor();   
 
 void clear_screen();   

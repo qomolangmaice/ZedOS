@@ -1,9 +1,7 @@
 #include "idt.h" 
 #include "isr.h" 
 #include "../libc/types.h" 
-#include "../libc/system.h" 
 #include "../libc/string.h" 
-#include "../libc/printk/debug.h"   
 
 #define ENTRY(X) (idt.entries[(X)])  
 
