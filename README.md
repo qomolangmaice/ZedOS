@@ -21,7 +21,8 @@ If you want to compile this os and run it, here is the steps:
 
  $ make clean 
 
-4. If you want to try this os in a real machine, you can burn ZedOS.iso into an U-disk.
+4. If you want to try this os in a real machine, you can burn ZedOS.iso into an U-disk. 
+   Reboot your system and choose U-disk boot
 
  $ sudo dd if=Zed.iso of=/dev/sdb1 bs=2M (depends on your device conditions)
  
