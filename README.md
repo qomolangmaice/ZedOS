@@ -13,11 +13,11 @@ If you want to compile this os and run it, here is the steps:
 
  $ make 
 
-2. Compile, link and run *.iso(in qemu). 
+2. Compile, link and run ZedOS.iso(in qemu). 
 
  $ make run 
 
-3. If you want generate the new *.iso, you should delete all *.o and *.iso at first.  
+3. If you want generate the new ZedOS.iso, you should delete all object files and ZedOS.iso at first.  
 
  $ make clean 
 
