@@ -10,8 +10,8 @@ kmain()
 	gdt_install();  
 	print("\nInitializing IDT ...");  
 
-	asm volatile ("int $0x3"); 
-	asm volatile ("int $0x4"); 
+	//asm volatile ("int $0x3"); 
+	//asm volatile ("int $0x4"); 
 	
 	print_with_color("\nWelcome to Zed Operating System!", rc_red); 
 	print_with_color("\nPlease enter a command.", rc_red); 
