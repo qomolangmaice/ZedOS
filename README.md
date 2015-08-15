@@ -3,7 +3,7 @@
 ZedOS is a hobby built operating system, as you know, developing an OS is not an easy stuff, 
 you may need to know a little bit of Assembly programming and C programming.
 
-Before you build your own system, you should install some softwares(In Ubuntu or Debian) like this: 
+Before you build your own operating system, you need to install some softwares(In Ubuntu or Debian) as follows: 
 
  $ sudo apt-get install xorriso gcc nasm qemu grub virtualbox
 
@@ -13,7 +13,7 @@ If you want to compile this os and run it, here is the steps:
 
  $ make 
 
-2. Compile, link and run  ZedOS.iso(in qemu).
+2. Compile, link and run ZedOS.iso(in qemu).
 
  $ make run 
 
