@@ -56,6 +56,6 @@ typedef void (*interrupt_handler_ptr)(registers_t *);
 /* Interrupt handler function pointer array */
 interrupt_handler_ptr interrupt_handlers[256]; 
 
-void register_interrupt_handler(uint8 n, interrupt_handler_ptr handler); 
+void register_interrupt_handler(uint8 irq_no, interrupt_handler_ptr handler); 
 
 #endif 

@@ -2,6 +2,7 @@
 #include "../drivers/screen.h" 
 #include "../cpu/gdt.h" 
 #include "../cpu/idt.h" 
+#include "../cpu/timer.h" 
 
 kmain()
 {
@@ -11,9 +12,15 @@ kmain()
 	print("\nInitializing IDT ...\n");  
 	idt_install(); 
 
-	__asm__ __volatile__ ("int $0x3"); 
-	__asm__ __volatile__ ("int $0x4"); 
+	//asm volatile ("int $0x3"); 
+	//asm volatile ("int $0x4"); 
 
+	init_timer(200);
+
+	/* Open interrupt */
+	//asm volatile ("sti"); 
+
+	/*
 	print_with_color("\nWelcome to Zed Operating System!", rc_red); 
 	print_with_color("\nPlease enter a command.", rc_red); 
 
@@ -24,7 +31,6 @@ kmain()
 		print("\n"); 
 		print_with_color(ch, rc_green); 
 
-		/*
 		if(str_equal(ch, "cmd"))
 		{
 			print("\nYou are already in CMD.\n"); 
@@ -39,6 +45,7 @@ kmain()
 		}
 
 		print("\n"); 
-		*/ 
 	}
+	*/ 
+	return 0; 
 }
