@@ -112,17 +112,21 @@ void printch(char c, uint8 font_color)
 	update_cursor(); 
 }
 
-void print_with_color(char *str, uint8 font_color)
+void print_with_color(string str, uint8 font_color)
 {
-	while(*str){ 
-		printch(*str++, font_color); 
+	uint8 count = 0; 
+	while(count < str_len(str) - 1){ 
+		printch(str[count], font_color); 
+		count++; 
 	}
 }
 
-void print(char *str)
+void print(string str)
 {
-	while(*str){ 
-		printch(*str++, rc_blue); 
+	uint8 count = 0; 
+	while(count < str_len(str) - 1){ 
+		printch(str[count], rc_blue); 
+		count++; 
 	}
 }
 

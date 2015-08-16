@@ -83,11 +83,13 @@ char *exception_messages[] = {
 
 void isr_handler(registers_t *regs) 
 {
-	print("received interrupt: "); 
 	char s[3]; 
+
+	print("received interrupt: ["); 
  	int_to_ascii(regs->int_no, s); 
 	print(s); 
-	print("\n"); 
+	print("], "); 
 	print(exception_messages[regs->int_no]); 
 	print("\n"); 
 }
+
