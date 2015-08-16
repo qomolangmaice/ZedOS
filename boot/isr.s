@@ -71,11 +71,11 @@ isr_commom_stub:
 	mov gs, ax 
 	mov ss, ax 
 
-	push esp  	 	; the value in 'esp' register is equal to the pointer of pt_regs_t 
+	push esp  	 	; the value in 'esp' register is equal to the pointer of registers_t(in 'isr.c')  
 	call isr_handler 	; in other C code 
 	add esp, 4  	; clean parameters that has been pushed 
 
-	pop ebx 	 	; back to the orignal data segment descriptor 
+	pop ebx 	 	; recover the original data segment descriptor 
 	mov ds, bx 
 	mov es, bx 
 	mov fs, bx 
@@ -83,7 +83,7 @@ isr_commom_stub:
 	mov ss, bx 
 
 	popa 	 	 	; Pops edi, esi, ebp, ebx, edx, ecx, eax 
-	add esp, 8 	 	; clean error code and ISR in stack 
-	iret 
+	add esp, 8 	 	; clean error code and ISR number in stack 
+	iret 	 	 	; Pop CS, EIP, EFLAGS, SS, ESP  
 .end: 
 

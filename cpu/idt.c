@@ -1,5 +1,6 @@
 #include "idt.h" 
 #include "isr.h" 
+#include "irq.h" 
 #include "../libc/types.h" 
 #include "../libc/string.h" 
 
@@ -29,6 +30,9 @@ void idt_install()
 
 	// setup Interrupt Service Routines, in isr.c 
 	isr_install(); 
+
+	/* setup Interrupt request handler function, in irq.c */
+	irq_install(); 
 
 	/* points to the processor's internal register to the new IDT */
 	idt_load((uint32)idtp); 
