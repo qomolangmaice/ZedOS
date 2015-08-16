@@ -55,7 +55,7 @@ ISR_NOERRCODE 30
 ISR_NOERRCODE 31  
 
 ; 32 ~ 255 User custom 
-ISR_NOERRCODE 255 
+; ISR_NOERRCODE 255 
 
 ; 4.Interrupt service handler 
 [extern isr_handler] 

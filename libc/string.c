@@ -10,12 +10,30 @@ void memory_set(void *dest, uint8 val, uint32 len)
 	}
 }
 
+/** 
+ * K&R implementation          
+ */
+void int_to_ascii(int n, char str[]) {
+    int i, sign;
+    if ((sign = n) < 0) n = -n;
+    i = 0;
+    do {
+        str[i++] = n % 10 + '0';        
+    } while ((n /= 10) > 0);
+
+    if (sign < 0) str[i++] = '-';   
+    str[i] = '\0';
+
+    /* TODO: implement "reverse" */ 
+}
+
 uint16 str_len(string ch)
 {
  	uint16 count = 0; 	 	// Changed counter to 0  
 	while(ch[count++]); 
 	return count; 	 	 	// changed counter to i instead of --i  
 }
+
 
 // Added in episode 3
 // This function compares two strings 

@@ -38,8 +38,16 @@ void newline_check();
 
 void printch(char c, uint8 font_color);   
 
-void print_with_color(string str, uint8 font_color);   
+//void print_with_color(string str, uint8 font_color);   
 
-void print(string str);   
+//void print(string str);   
+
+void print_with_color(char *str, uint8 font_color);   
+
+void print(char *str);   
+
+void print_hex(uint32 n, uint8 font_color); 
+
+void print_dex(uint32 n, uint8 font_color); 
 
 #endif 

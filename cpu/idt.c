@@ -20,9 +20,6 @@ void idt_set_gate(
 
 void idt_install() 
 {
-	/* clear out the entire ISR, initializing it to zeros */
-	isr_memset(); 
-
 	idt_ptr_t *idtp = &idt.pointer;  
  	idtp->limit = (sizeof(struct idt_entry_struct) * 256) - 1; 
 	idtp->base = (uint32)&ENTRY(0); 
@@ -31,7 +28,7 @@ void idt_install()
 	memory_set(&ENTRY(0), 0, sizeof(struct idt_entry_struct)*256); 
 
 	// setup Interrupt Service Routines, in isr.c 
-	isr_init(); 
+	isr_install(); 
 
 	/* points to the processor's internal register to the new IDT */
 	idt_load((uint32)idtp); 

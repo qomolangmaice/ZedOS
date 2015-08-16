@@ -8,10 +8,13 @@ kmain()
 	clear_screen(); 
 	print("Initializing GDT ...");  
 	gdt_install();  
-	print("\nInitializing IDT ...");  
+	print("\nInitializing IDT ...\n");  
+	idt_install(); 
 
-	//asm volatile ("int $0x3"); 
-	//asm volatile ("int $0x4"); 
+	//int i = 5/0; 
+	__asm__ __volatile__ ("int $0x3"); 
+	__asm__ __volatile__ ("int $0x4"); 
+	printf("This is a hexadecminal test: %x", 0xFF);  
 	
 	print_with_color("\nWelcome to Zed Operating System!", rc_red); 
 	print_with_color("\nPlease enter a command.", rc_red); 

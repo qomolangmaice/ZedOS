@@ -2,15 +2,9 @@
 #include "idt.h" 
 #include "../libc/types.h" 
 #include "../libc/string.h" 
-#include "../libc/printf.h" 
 #include "../drivers/screen.h" 
 
-void isr_memset()
-{
- 	memory_set((uint8 *)&interrupt_handlers, 0, sizeof(interrupt_handler_t)*256); 
-}
-
-void isr_init()
+void isr_install()
 {
  	idt_set_gate(0, (uint32)isr0, 0x08, 0x8E); 
  	idt_set_gate(1, (uint32)isr1, 0x08, 0x8E); 
@@ -44,22 +38,56 @@ void isr_init()
  	idt_set_gate(29, (uint32)isr29, 0x08, 0x8E); 
  	idt_set_gate(30, (uint32)isr30, 0x08, 0x8E); 
  	idt_set_gate(31, (uint32)isr31, 0x08, 0x8E); 
- 	idt_set_gate(255, (uint32)isr255, 0x08, 0x8E); 
 }
 
-void isr_handler(pt_regs_t *regs)
-{
-	if(interrupt_handlers[regs->int_no]) 
-	{
-		interrupt_handlers[regs->int_no](regs); 
-	}
-	else
-	{
-		printf("Unhandled interrupt: [%d]\n", regs->int_no); 
-	}
-}
 
-void register_interrupt_handler(uint8 num, interrupt_handler_t handler)
+
+/* To print the message which defines every exception */
+char *exception_messages[] = {
+    "Division By Zero",
+    "Debug",
+    "Non Maskable Interrupt",
+    "Breakpoint",
+    "Into Detected Overflow",
+    "Out of Bounds",
+    "Invalid Opcode",
+    "No Coprocessor",
+
+    "Double Fault",
+    "Coprocessor Segment Overrun",
+    "Bad TSS",
+    "Segment Not Present",
+    "Stack Fault",
+    "General Protection Fault",
+    "Page Fault",
+    "Unknown Interrupt",
+
+    "Coprocessor Fault",
+    "Alignment Check",
+    "Machine Check",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+}; 
+
+void isr_handler(registers_t *regs) 
 {
-	interrupt_handlers[num] = handler; 
+	print("received interrupt: "); 
+	char s[3]; 
+ 	int_to_ascii(regs->int_no, s); 
+	print(s); 
+	print("\n"); 
+	print(exception_messages[regs->int_no]); 
+	print("\n"); 
 }
