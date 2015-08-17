@@ -6,24 +6,24 @@
 
 kmain()
 {
-	clear_screen(); 
+ 	clear_screen();
 	print("Initializing GDT ...");  
 	gdt_install();  
-	print("\nInitializing IDT ...\n");  
+	print("\nInitializing IDT ...");  
 	idt_install(); 
 
 	//asm volatile ("int $0x3"); 
 	//asm volatile ("int $0x4"); 
 
-	init_timer(200);
+	print_with_color("\nWelcome to Zed Operating System!", rc_red); 
+	print_with_color("\nPlease enter a command.\n", rc_red); 
+
+	init_timer(50);
 
 	/* Open interrupt */
-	//asm volatile ("sti"); 
+	asm volatile ("sti"); 
 
 	/*
-	print_with_color("\nWelcome to Zed Operating System!", rc_red); 
-	print_with_color("\nPlease enter a command.", rc_red); 
-
 	while(1)
 	{
 	 	print("\nZedOS> "); 

@@ -19,7 +19,7 @@
  * order to make IRQ0 to IRQ15 be remapped to IDT entries 32 to 47 
  * 
  */  
-void irq_remap(void)
+void irq_remap()
 {
 
 	/* Remap IRQ table
@@ -62,23 +62,23 @@ void irq_install()
 {
 	irq_remap(); 
 
-	idt_set_gate(32, (uint32)irq0, 0x80, 0x8E); 
-	idt_set_gate(33, (uint32)irq1, 0x80, 0x8E); 
-	idt_set_gate(34, (uint32)irq2, 0x80, 0x8E); 
-	idt_set_gate(35, (uint32)irq3, 0x80, 0x8E); 
-	idt_set_gate(36, (uint32)irq4, 0x80, 0x8E); 
-	idt_set_gate(37, (uint32)irq5, 0x80, 0x8E); 
-	idt_set_gate(38, (uint32)irq6, 0x80, 0x8E); 
-	idt_set_gate(39, (uint32)irq7, 0x80, 0x8E); 
+	idt_set_gate(32, (uint32)irq0, 0x08, 0x8E); 
+	idt_set_gate(33, (uint32)irq1, 0x08, 0x8E); 
+	idt_set_gate(34, (uint32)irq2, 0x08, 0x8E); 
+	idt_set_gate(35, (uint32)irq3, 0x08, 0x8E); 
+	idt_set_gate(36, (uint32)irq4, 0x08, 0x8E); 
+	idt_set_gate(37, (uint32)irq5, 0x08, 0x8E); 
+	idt_set_gate(38, (uint32)irq6, 0x08, 0x8E); 
+	idt_set_gate(39, (uint32)irq7, 0x08, 0x8E); 
 
-	idt_set_gate(40, (uint32)irq8, 0x80, 0x8E); 
-	idt_set_gate(41, (uint32)irq9, 0x80, 0x8E); 
-	idt_set_gate(42, (uint32)irq10, 0x80, 0x8E); 
-	idt_set_gate(43, (uint32)irq11, 0x80, 0x8E); 
-	idt_set_gate(44, (uint32)irq12, 0x80, 0x8E); 
-	idt_set_gate(45, (uint32)irq13, 0x80, 0x8E); 
-	idt_set_gate(46, (uint32)irq14, 0x80, 0x8E); 
-	idt_set_gate(47, (uint32)irq15, 0x80, 0x8E); 
+	idt_set_gate(40, (uint32)irq8, 0x08, 0x8E); 
+	idt_set_gate(41, (uint32)irq9, 0x08, 0x8E); 
+	idt_set_gate(42, (uint32)irq10, 0x08, 0x8E); 
+	idt_set_gate(43, (uint32)irq11, 0x08, 0x8E); 
+	idt_set_gate(44, (uint32)irq12, 0x08, 0x8E); 
+	idt_set_gate(45, (uint32)irq13, 0x08, 0x8E); 
+	idt_set_gate(46, (uint32)irq14, 0x08, 0x8E); 
+	idt_set_gate(47, (uint32)irq15, 0x08, 0x8E); 
 }
 
 void register_interrupt_handler(uint8 irq_no, interrupt_handler_ptr handler)
@@ -100,9 +100,11 @@ void irq_handler(registers_t *regs)
 	outportb(0x20, 0x20); 
 
 	/* This is a blank function pointer */
-	void (*handler)(registers_t *); 
+	//void (*handler)(registers_t *regs); 
+	interrupt_handler_ptr handler; 
 
-	handler = interrupt_handlers[regs->int_no]; 
+ 	handler = interrupt_handlers[regs->int_no];  
+
 	if(handler)
 	{
 		handler(regs); 
