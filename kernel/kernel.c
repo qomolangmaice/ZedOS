@@ -18,7 +18,7 @@ kmain()
 	print_with_color("\nWelcome to Zed Operating System!", rc_red); 
 	print_with_color("\nPlease enter a command.\n", rc_red); 
 
-	init_timer(50);
+	init_timer(200);
 
 	/* Open interrupt */
 	asm volatile ("sti"); 

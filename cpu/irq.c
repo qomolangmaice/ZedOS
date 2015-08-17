@@ -100,7 +100,7 @@ void irq_handler(registers_t *regs)
 	outportb(0x20, 0x20); 
 
 	/* This is a blank function pointer */
-	//void (*handler)(registers_t *regs); 
+	/* void (*handler)(registers_t *regs); */  
 	interrupt_handler_ptr handler; 
 
  	handler = interrupt_handlers[regs->int_no];  
