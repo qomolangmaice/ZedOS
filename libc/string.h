@@ -10,4 +10,8 @@ void int_to_ascii(int n, char str[]);
 
 uint8 str_equal(string ch1, string ch2);   
 
+void backspace(char s[]); 
+void append(char s[], char n); 
+int strcmp(char s1[], char s2[]);  
+
 #endif 

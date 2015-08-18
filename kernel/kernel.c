@@ -11,17 +11,21 @@ kmain()
 	gdt_install();  
 	print("\nInitializing IDT ...");  
 	idt_install(); 
+	keyboard_install(); 
 
 	//asm volatile ("int $0x3"); 
 	//asm volatile ("int $0x4"); 
 
 	print_with_color("\nWelcome to Zed Operating System!", rc_red); 
 	print_with_color("\nPlease enter a command.\n", rc_red); 
+	print("\n"); 
 
-	init_timer(200);
+	//init_timer(200);
 
 	/* Open interrupt */
 	asm volatile ("sti"); 
+
+	for(;;); 
 
 	/*
 	while(1)

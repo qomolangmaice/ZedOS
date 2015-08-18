@@ -59,3 +59,27 @@ uint8 str_equal(string ch1, string ch2)
 	return result; 
 }
 
+void append(char s[], char n)
+{
+	int len = str_len(s); 
+	s[len] = n; 
+	s[len + 1] = '\0'; 
+}
+
+void backspace(char s[])
+{
+	int len = str_len(s); 
+	s[len - 1] = '\0'; 
+}
+
+int strcmp(char s1[], char s2[])
+{
+	int i; 
+	for (i = 0; s1[i] == s2[i]; i++)
+	{
+		if(s1[i] == '\0')
+			return 0; 
+	}
+	
+	return s1[i] -s2[i]; 
+}
