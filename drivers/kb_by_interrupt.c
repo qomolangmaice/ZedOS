@@ -1,14 +1,17 @@
 /*
  *     File Name: kb.c
- *     Description: 
+ *     Description: keyboard driver 
  *     Author: iczelion
  *     Email: qomolangmaice@163.com 
  *     Created: 2015年08月18日 星期二 21时03分09秒
  */
-#include "kb.h" 
+#include "kb_by_interrupt.h" 
 #include "../drivers/screen.h" 
 #include "../cpu/irq.h" 
 
+/* KBDUS means US Keyboard Layout.
+ * This is scancode table used to layout a standard US keeyboard.
+ * Notes: This code is from Bran's Kernel Development Tutorial */
 unsigned char kbdus[128] =
 {
 	0, 27, '1', '2', '3', '4', '5', '6', '7', '8', 
@@ -42,7 +45,7 @@ unsigned char kbdus[128] =
 	  0,  	/* Page Down */
 	  0,  	/* Inert Key */
 	  0,  	/* Delete Key */
-	  0, 0, 0   
+	  0, 0, 0,   
 	  0,  	/* F11 Key */
 	  0,  	/* F12 Key */
 	  0,  	/* All other keys are undefined */
@@ -53,7 +56,7 @@ static void keyboard_handler(registers_t *regs)
  	unsigned char scancode; 
 
 	/*  Read from the keyboard's data buffer */
-	scancode = inportb(0x06); 
+	scancode = inportb(0x60); 
 
 	/* If the top bit of the byte we read from the keyboard is 
 	 * set, that means that a key has just been released */
@@ -61,18 +64,19 @@ static void keyboard_handler(registers_t *regs)
 	{
 		/* You can use this one to see if the user released the 
 		 * shift, altm orm control keys ... */
-
+	 	//printch('p', rc_light_white); 
 	}
 	else 
 	{
 		/* Here, a key ws just pressed. Please note that if you 
 		 * hold a key down, you will get repeated key press interrupt 
 		 */
-		print(kbdus[scancode]); 
+	 	printch(kbdus[scancode], rc_light_white); 
 	}
 }
 
 void keyboard_install()
 {
-	regigster_interrupt_handler(IRQ1, keyboard_handler); 
+	/* Installs the keyboard handler into IRQ1 */
+	register_interrupt_handler(IRQ1, keyboard_handler); 
 }

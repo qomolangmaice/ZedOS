@@ -1,30 +1,32 @@
-#include "../drivers/keyboard.h" 
+//#include "../drivers/keyboard.h" 
 #include "../drivers/screen.h" 
-#include "../cpu/gdt.h" 
-#include "../cpu/idt.h" 
-#include "../cpu/timer.h" 
+//#include "gdt.h" 
+//#include "idt.h" 
+//#include "timer.h" 
 
 kmain()
 {
  	clear_screen();
-	print("Initializing GDT ...");  
-	gdt_install();  
-	print("\nInitializing IDT ...");  
-	idt_install(); 
-	keyboard_install(); 
-
-	//asm volatile ("int $0x3"); 
-	//asm volatile ("int $0x4"); 
-
 	print_with_color("\nWelcome to Zed Operating System!", rc_red); 
 	print_with_color("\nPlease enter a command.\n", rc_red); 
 	print("\n"); 
 
+	print("Initializing GDT ...");  
+	gdt_install();  
+	print("\nInitializing IDT ...\n");  
+	idt_install(); 
+	/* Test for keyboard driver */
+	keyboard_install(); 
+
+	/* Test for interrupt service routines */
+	//asm volatile ("int $0x3"); 
+	//asm volatile ("int $0x4"); 
+
+	/* Test for interrupt request handler*/
 	//init_timer(200);
 
 	/* Open interrupt */
 	asm volatile ("sti"); 
-
 	for(;;); 
 
 	/*
@@ -50,6 +52,6 @@ kmain()
 
 		print("\n"); 
 	}
-	*/ 
 	return 0; 
+	*/
 }
