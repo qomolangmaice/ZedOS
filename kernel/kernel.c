@@ -1,4 +1,4 @@
-//#include "../drivers/keyboard.h" 
+#include "../drivers/keyboard.h" 
 #include "../drivers/screen.h" 
 //#include "gdt.h" 
 //#include "idt.h" 
@@ -15,43 +15,11 @@ kmain()
 	gdt_install();  
 	print("\nInitializing IDT ...\n");  
 	idt_install(); 
-	/* Test for keyboard driver */
-	keyboard_install(); 
 
-	/* Test for interrupt service routines */
-	//asm volatile ("int $0x3"); 
-	//asm volatile ("int $0x4"); 
+	init_keyboard(); 
 
-	/* Test for interrupt request handler*/
-	//init_timer(200);
-
-	/* Open interrupt */
-	asm volatile ("sti"); 
-	for(;;); 
-
-	/*
 	while(1)
 	{
-	 	print("\nZedOS> "); 
-		string ch = read_str(); 
-		print("\n"); 
-		print_with_color(ch, rc_green); 
-
-		if(str_equal(ch, "cmd"))
-		{
-			print("\nYou are already in CMD.\n"); 
-		}
-		else if(str_equal(ch, "clear"))
-		{
-			clear_screen(); 
-		}
-		else 
-		{
-			print("\nBad Command\n"); 
-		}
-
-		print("\n"); 
+		keyboard_read(); 
 	}
-	return 0; 
-	*/
 }

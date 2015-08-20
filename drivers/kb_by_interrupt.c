@@ -53,26 +53,30 @@ unsigned char kbdus[128] =
 
 static void keyboard_handler(registers_t *regs)
 {
- 	unsigned char scancode; 
+ 	unsigned int scancode; 
 
 	/*  Read from the keyboard's data buffer */
 	scancode = inportb(0x60); 
+	//print("* "); 
+	printf("%X ", scancode); 
 
 	/* If the top bit of the byte we read from the keyboard is 
 	 * set, that means that a key has just been released */
+	/*
 	if (scancode & 0x80)
 	{
-		/* You can use this one to see if the user released the 
-		 * shift, altm orm control keys ... */
+		 You can use this one to see if the user released the 
+		  shift, altm orm control keys ...
 	 	//printch('p', rc_light_white); 
 	}
 	else 
 	{
-		/* Here, a key ws just pressed. Please note that if you 
-		 * hold a key down, you will get repeated key press interrupt 
-		 */
+		 Here, a key ws just pressed. Please note that if you 
+		 hold a key down, you will get repeated key press interrupt 
+		 
 	 	printch(kbdus[scancode], rc_light_white); 
 	}
+	*/
 }
 
 void keyboard_install()
