@@ -1,8 +1,8 @@
 #include "../drivers/keyboard.h" 
 #include "../drivers/screen.h" 
-//#include "gdt.h" 
-//#include "idt.h" 
-//#include "timer.h" 
+#include "../cpu/gdt.h" 
+#include "../cpu/idt.h" 
+#include "../cpu/timer.h" 
 
 kmain()
 {
@@ -17,9 +17,13 @@ kmain()
 	idt_install(); 
 
 	init_keyboard(); 
-
+	
+	asm volatile ("sti"); 
+	for(;;); 
+	/*
 	while(1)
 	{
 		keyboard_read(); 
 	}
+	*/
 }
