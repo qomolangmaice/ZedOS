@@ -3,7 +3,7 @@
  *     Description: 
  *     Author: iczelion
  *     Email: qomolangmaice@163.com 
- *     Created: 2015¿08¿22¿ ¿¿¿ 17¿06¿49¿
+ *     Created: 2015.08.22. Saturday 17:06:49
  */
 
 #ifndef	KEYBOARD_H 
