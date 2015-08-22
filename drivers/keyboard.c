@@ -16,6 +16,17 @@
 #define KB_INPUT_PORT  0x60  
 
 static KB_INPUT kbinput; 
+static int code_with_E0 = 0; 	
+static int shift_l; 	 	 	/* left shift state  */ 
+static int shift_r; 	 	 	/* right shift state */ 
+static int alt_l;  	 	 	 	/* left alt state */ 
+static int alt_r; 	 	 	    /* right alt state */ 
+static int ctrl_l; 	 	 	 	/* left ctrl state */ 
+static int ctrl_r; 	 	 	 	/* right ctrl state */ 
+static int caps_lock; 	 	 	/* Caps Lock */ 
+static int num_lock; 	 	 	/* Num Lock */ 
+static int scroll_lock; 	 	/* Scroll Lock */ 
+static int column; 	 	 	 	
 /*======================================================================*
                             keyboard_handler
  *======================================================================*/
@@ -56,14 +67,20 @@ void init_keyboard()
 /*======================================================================*
                            keyboard_read
 *======================================================================*/
+
+/* Analysis ScanCode */
 void keyboard_read()
 {
-	uint8	scan_code;
-	char	output[2];
- 	uint8	make;	/* TRUE : make , FALSE: break */
-	
+	uint8 scan_code;
+	char  output[2];
+ 	uint8 make;	/* TRUE : make , FALSE: break */
+
+	uint32 key = 0; 	/* An integer variable is represent for a key */
+	uint32 *keyrow; 
+
 	/* Clean output array */
 	memory_set(output, 0, 2);
+
 	if(kbinput.count > 0)
 	{
 		scan_code = *(kbinput.p_tail);
@@ -90,10 +107,62 @@ void keyboard_read()
 			/* If ScanCode is Make Code, then prints it, 
 			 * and if Scancode is Break Code, not to do anything now */
 			make = (scan_code & FLAG_BREAK ? FALSE : TRUE);
-			if(make)
+
+			/* Firstly, Locate in the rows of keymap array */
+			keyrow = &keymap[(scan_code & 0x7F) * MAP_COLS]; 
+
+			column = 0; 
+			if(shift_l || shift_r)
 			{
-				output[0] = keymap[(scan_code & 0x7F) * MAP_COLS];
-				print(output);
+				column = 1; 
+			}
+			if(code_with_E0)
+			{
+				column = 2; 
+				code_with_E0 = 0; 
+			}
+
+			key = keyrow[column]; 
+
+			switch(key) 
+			{
+				case SHIFT_L:
+					shift_l = make; 
+					key = 0; 
+					break; 
+				case SHIFT_R:  
+					shift_r = make; 
+					key = 0; 
+					break; 
+ 	 	 	 	case CTRL_L:
+					ctrl_l = make; 
+					key = 0; 
+					break; 
+				case CTRL_R:  
+					ctrl_r = make; 
+					key = 0; 
+					break; 
+ 	 	 	 	case ALT_L:
+					alt_l = make; 
+					key = 0; 
+					break; 
+				case ALT_R:  
+					alt_r = make; 
+					key = 0; 
+					break; 
+				default: 
+					if(!make) 
+					{
+						key = 0;  	/* If scancode is BreakCode, ignore it  */
+					}
+					break; 
+			}
+
+			/* If key exsits(is not equal to 0), then prints it */
+			if(key) 
+			{
+				output[0] = key; 
+				print(output); 
 			}
 		}
 	}
