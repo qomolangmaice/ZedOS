@@ -5,36 +5,33 @@
  *     Email: qomolangmaice@163.com 
  *     Created: 2015年08月20日 星期四 23时28分59秒
  */
-/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-                              keyboard.h
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-#ifndef	_TINIX_KEYBOARD_H_
-#define	_TINIX_KEYBOARD_H_
+#ifndef	KEYBOARD_H 
+#define	KEYBOARD_H 
 
 /************************************************************************/
 /*                          Macros Declaration                          */
 /************************************************************************/
-#define TRUE 1
-#define FALSE 0
-#define	KB_IN_BYTES	32	/* size of keyboard input buffer */
-#define MAP_COLS	3	/* Number of columns in keymap */
-#define NR_SCAN_CODES	0x80	/* Number of scan codes (rows in keymap) */
-#define FLAG_BREAK	0x0080		/* Break Code			*/
-#define FLAG_EXT	0x0100		/* Normal function keys		*/
+#define TRUE   	 	 	1
+#define FALSE  	 	 	0  
+#define	KB_IN_BYTES	 	32	 	 	/* size of keyboard input buffer */
+#define MAP_COLS	 	3	 	 	/* Number of columns in keymap */
+#define NR_SCAN_CODES	0x80	 	/* Number of scan codes (rows in keymap) */
+#define FLAG_BREAK	 	0x0080		/* Break Code			*/
+#define FLAG_EXT	 	0x0100		/* Normal function keys	*/
 #define FLAG_SHIFT_L	0x0200		/* Shift key			*/
 #define FLAG_SHIFT_R	0x0400		/* Shift key			*/
-#define FLAG_CTRL_L	0x0800		/* Control key			*/
-#define FLAG_CTRL_R	0x1000		/* Control key			*/
-#define FLAG_ALT_L	0x2000		/* Alternate key		*/
-#define FLAG_ALT_R	0x4000		/* Alternate key		*/
-#define FLAG_PAD	0x8000		/* keys in num pad		*/
-#define MASK_RAW	0x01FF		/* raw key value = code passed to tty & MASK_RAW
-					   the value can be found either in the keymap column 0
-					   or in the list below */
+#define FLAG_CTRL_L		0x0800		/* Control key			*/
+#define FLAG_CTRL_R		0x1000		/* Control key			*/
+#define FLAG_ALT_L		0x2000		/* Alternate key		*/
+#define FLAG_ALT_R		0x4000		/* Alternate key		*/
+#define FLAG_PAD		0x8000		/* keys in num pad		*/
+#define MASK_RAW		0x01FF		/* raw key value = code passed to tty & MASK_RAW
+					    	 	 	 	the value can be found either in the keymap column 0
+					    	 	 	 	or in the list below */
 
 /* Special keys */
-#define ESC		(0x01 + FLAG_EXT)	/* Esc		*/
-#define TAB		(0x02 + FLAG_EXT)	/* Tab		*/
+#define ESC		 	(0x01 + FLAG_EXT)	/* Esc		*/
+#define TAB		 	(0x02 + FLAG_EXT)	/* Tab		*/
 #define ENTER		(0x03 + FLAG_EXT)	/* Enter	*/
 #define BACKSPACE	(0x04 + FLAG_EXT)	/* BackSpace	*/
 #define GUI_L		(0x05 + FLAG_EXT)	/* L GUI	*/
@@ -74,10 +71,10 @@
 #define INSERT		(0x1F + FLAG_EXT)	/* Insert	*/
 #define DELETE		(0x20 + FLAG_EXT)	/* Delete	*/
 #define HOME		(0x21 + FLAG_EXT)	/* Home		*/
-#define END		(0x22 + FLAG_EXT)	/* End		*/
+#define END		 	(0x22 + FLAG_EXT)	/* End		*/
 #define PAGEUP		(0x23 + FLAG_EXT)	/* Page Up	*/
 #define PAGEDOWN	(0x24 + FLAG_EXT)	/* Page Down	*/
-#define UP		(0x25 + FLAG_EXT)	/* Up		*/
+#define UP		 	(0x25 + FLAG_EXT)	/* Up		*/
 #define DOWN		(0x26 + FLAG_EXT)	/* Down		*/
 #define LEFT		(0x27 + FLAG_EXT)	/* Left		*/
 #define RIGHT		(0x28 + FLAG_EXT)	/* Right	*/
@@ -104,29 +101,59 @@
 #define PAD_7		(0x39 + FLAG_EXT)	/* 7		*/
 #define PAD_8		(0x3A + FLAG_EXT)	/* 8		*/
 #define PAD_9		(0x3B + FLAG_EXT)	/* 9		*/
-#define PAD_UP		PAD_8			/* Up		*/
-#define PAD_DOWN	PAD_2			/* Down		*/
-#define PAD_LEFT	PAD_4			/* Left		*/
-#define PAD_RIGHT	PAD_6			/* Right	*/
-#define PAD_HOME	PAD_7			/* Home		*/
-#define PAD_END		PAD_1			/* End		*/
-#define PAD_PAGEUP	PAD_9			/* Page Up	*/
+#define PAD_UP			PAD_8			/* Up		*/
+#define PAD_DOWN		PAD_2			/* Down		*/
+#define PAD_LEFT		PAD_4			/* Left		*/
+#define PAD_RIGHT		PAD_6			/* Right	*/
+#define PAD_HOME		PAD_7			/* Home		*/
+#define PAD_END			PAD_1			/* End		*/
+#define PAD_PAGEUP		PAD_9			/* Page Up	*/
 #define PAD_PAGEDOWN	PAD_3			/* Page Down	*/
-#define PAD_INS		PAD_0			/* Ins		*/
-#define PAD_MID		PAD_5			/* Middle key	*/
-#define PAD_DEL		PAD_DOT			/* Del		*/
+#define PAD_INS			PAD_0			/* Ins		*/
+#define PAD_MID			PAD_5			/* Middle key	*/
+#define PAD_DEL			PAD_DOT			/* Del		*/
 
 /************************************************************************/
 /*                         Stucture Definition                          */
 /************************************************************************/
 /* Keyboard structure, 1 per console. */
-typedef struct s_kb {
-	char	*p_head;			/* 指向缓冲区中下一个空闲位置 */
-	char	*p_tail;			/* 指向键盘任务应处理的字节 */
-	int	count;			/* 缓冲区中共有多少字节 */
-	char	buf[KB_IN_BYTES];	/* 缓冲区 */
+                   
+/*
+   ------------------------ High --|
+	  	  | 	 	  |            | 
+	  	  | 	 	  |            |
+	  	  | 	 	  |            |
+		  -------------            |
+		  | 	 	  |            |
+		  | 	 	  |            |
+		 -----------------         |
+ 		| |***********| <- P_head  |
+		| -------------            |
+		| |***********|            |
+		| -------------            |
+  count	| |***********|            |
+		| -------------            |   KB_IN_BYTES  
+		| |***********|            |
+		| -------------            |
+		| |***********|            |
+		| -------------            |
+		| |***********| <- P_tail  |
+		 -----------------         |
+		  | 	 	  |            |
+		  | 	 	  |            |
+		  -------------            |
+		  | 	 	  |            |
+		  | 	 	  |            |
+		  | 	 	  |            |
+      --------------------  Low  --| 
+*/  
+typedef struct stru_kb {
+	char	*p_head;			/* Point to the next empty block in buffer */
+	char	*p_tail;			/* Point to the byte which is handled by keyboard */
+	int	 	count;		 	 	/* count =  p_head - p_tail, count is the sum of bytes in buffer */
+	char	buf[KB_IN_BYTES];	/* Buffer size */
 }KB_INPUT;
 
-void init_keyboard(); 
 void keyboard_read(); 
-#endif /* _TINIX_KEYBOARD_H_ */
+void init_keyboard(); 
+#endif  
