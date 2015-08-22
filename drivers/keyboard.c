@@ -60,8 +60,7 @@ void keyboard_read()
 {
 	uint8	scan_code;
 	char	output[2];
- 	uint8	make;	/* TRUE : make  */
-	 	 			/* FALSE: break */
+ 	uint8	make;	/* TRUE : make , FALSE: break */
 	
 	/* Clean output array */
 	memory_set(output, 0, 2);
