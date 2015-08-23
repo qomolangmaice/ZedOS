@@ -153,8 +153,7 @@ uint32 keymap[NR_SCAN_CODES * MAP_COLS] = {
 
 
 /*
-	回车键:	把光标移到第一列
-	换行键:	把光标前进到下一行
+ * Enter key: move the cursor to the next line 
 */
 
 

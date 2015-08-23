@@ -17,6 +17,8 @@ kmain()
 	idt_install(); 
 
 	init_keyboard(); 
+
+	update_cursor(); 
 	
 	asm volatile ("sti"); 
 	for(;;); 
