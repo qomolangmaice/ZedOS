@@ -130,4 +130,6 @@ typedef struct s_kb {
 	char	buf[KB_IN_BYTES];	/* Buffer size */
 }KB_INPUT;
 
+void keyboard_read(); 
+void init_keyboard(); 
 #endif 

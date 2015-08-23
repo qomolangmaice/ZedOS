@@ -3,7 +3,7 @@
  *     Description: keyboard driver  
  *     Author: iczelion
  *     Email: qomolangmaice@163.com 
- *     Created: 2015年08月20日 星期四 23时14分22秒
+ *     Created: 2015.08.20 Thursday 23:14:22
  */
 #include "../libc/types.h"
 #include "../libc/string.h"
@@ -27,6 +27,9 @@ static int caps_lock; 	 	 	/* Caps Lock */
 static int num_lock; 	 	 	/* Num Lock */ 
 static int scroll_lock; 	 	/* Scroll Lock */ 
 static int column; 	 	 	 	
+
+uint8 get_byte_from_kbuf(); 
+void in_process(uint32 key); 
 /*======================================================================*
                             keyboard_handler
  *======================================================================*/
@@ -72,40 +75,78 @@ void init_keyboard()
 void keyboard_read()
 {
 	uint8 scan_code;
-	char  output[2];
  	uint8 make;	/* TRUE : make , FALSE: break */
 
 	uint32 key = 0; 	/* An integer variable is represent for a key */
-	uint32 *keyrow; 
+	uint32 *keyrow; 	/* Point to the line of keymap[] */ 
 
-	/* Clean output array */
-	memory_set(output, 0, 2);
-
+	
 	if(kbinput.count > 0)
 	{
-		scan_code = *(kbinput.p_tail);
+		code_with_E0 = 0; 
 
-		kbinput.p_tail++;
-		if (kbinput.p_tail == kbinput.buf + KB_IN_BYTES) 
-		{
-			kbinput.p_tail = kbinput.buf;
-		}
-		kbinput.count--;
-
+		scan_code = get_byte_from_kbuf(); 
+		
 		/* analysis scancode */
 		if (scan_code == 0xE1) 
 		{
-			/* Not to do anything right now */
+			uint32 i; 
+			uint8 pausebrk_scode[] = {0xE1, 0x1D, 0x45, 
+				 	 	 	 	 	  0xE1, 0x9D, 0xC5}; 
+			uint32 is_pausebreak = 1; 
+			for(i=1; i<6; i++)
+			{
+				if(get_byte_from_kbuf() != pausebrk_scode[i])
+				{
+					is_pausebreak = 0; 
+					break; 
+				}
+			}
+			if(is_pausebreak)
+			{
+				key = PAUSEBREAK; 
+			}
 		}
 		else if (scan_code == 0xE0) 
 		{
-			/* Not to do anything right now */
+			scan_code = get_byte_from_kbuf(); 
+
+			/* Press 'PrintScreen key */
+			if(scan_code == 0x2A)
+			{
+				if(get_byte_from_kbuf() == 0xE0)
+				{
+					if(get_byte_from_kbuf() == 0x37)
+					{
+						key = PRINTSCREEN; 
+						make = 1; 
+					}
+				}
+			}
+
+			/* Release 'PrintScreen' key */
+			if(scan_code == 0xB7)
+			{
+				if(get_byte_from_kbuf() == 0xE0)
+				{
+					if(get_byte_from_kbuf() == 0xAA)
+					{
+						key = PRINTSCREEN; 
+						make = 0; 
+					}
+				}
+			}
+
+			/*  */
+			if(key == 0)
+			{
+				code_with_E0 = 1; 
+			}
 		}
-		else 
+		if ((key != PAUSEBREAK) && (key != PRINTSCREEN))  
 		{	
 			/* handle charactor that can be printed */
-			/* If ScanCode is Make Code, then prints it, 
-			 * and if Scancode is Break Code, not to do anything now */
+			/* Judge the scancode is Make Code or Break Code */
 			make = (scan_code & FLAG_BREAK ? FALSE : TRUE);
 
 			/* Firstly, Locate in the rows of keymap array */
@@ -151,19 +192,53 @@ void keyboard_read()
 					key = 0; 
 					break; 
 				default: 
-					if(!make) 
-					{
-						key = 0;  	/* If scancode is BreakCode, ignore it  */
-					}
 					break; 
 			}
 
-			/* If key exsits(is not equal to 0), then prints it */
-			if(key) 
+			/* If the key exsits(is not equal to 0), then prints it */
+			if(make) 	/* Ignore Break Code */ 
 			{
-				output[0] = key; 
-				print(output); 
+				key |= shift_l ? FLAG_SHIFT_L : 0; 
+				key |= shift_r ? FLAG_SHIFT_R : 0; 
+				key |= ctrl_l  ? FLAG_CTRL_L  : 0; 
+				key |= ctrl_r  ? FLAG_CTRL_L  : 0; 
+				key |= alt_l   ? FLAG_ALT_L   : 0; 
+				key |= alt_r   ? FLAG_ALT_R   : 0; 
+
+				in_process(key); 
 			}
 		}
+	}
+}
+
+uint8 get_byte_from_kbuf() 	/* Read the next byte from keboard buffer */	
+{
+	uint8 scan_code; 
+
+	while(kbinput.count <= 0) {} 	/* Wait for the next byte  */
+
+ 	scan_code = *(kbinput.p_tail);
+
+	kbinput.p_tail++;
+	if (kbinput.p_tail == kbinput.buf + KB_IN_BYTES) 
+	{
+		kbinput.p_tail = kbinput.buf;
+	}
+	kbinput.count--;
+	
+	return scan_code; 
+}
+
+/*  */
+void in_process(uint32 key)
+{
+ 	/* Clean output array */
+	/* memory_set(output, 0, 2); */  
+	char output[2] = {'\0', '\0'}; 
+	
+	if(!(key & FLAG_EXT)) 
+	{
+		output[0] = key & 0xFF; 
+		print(output); 
 	}
 }
