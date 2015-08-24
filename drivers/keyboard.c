@@ -241,28 +241,4 @@ void in_process(uint32 key)
 		output[0] = key & 0xFF; 
 		print(output); 
 	}
-	else {
-		int raw_code = key & MASK_RAW; 
-		switch(raw_code) 
-		{
-			case UP:
-				if((key & FLAG_SHIFT_L) || (key & FLAG_SHIFT_R)) 
-				{
-					//update_cursor(); 
-					outportb(CRTC_ADDR_REG, CURSOR_H); 
-					outportb(CRTC_DATA_REG, ((80*15) >> 8) & 0xFF); 
-					outportb(CRTC_ADDR_REG, CURSOR_L); 
-					outportb(CRTC_DATA_REG, (80*15) & 0xFF); 
-				}
-				break; 
-			case DOWN: 
-				if((key & FLAG_SHIFT_L) || (key & FLAG_SHIFT_R))
-				{
-					/* Shift + Down, do nothing */
-				}
-				break; 
-			default: 
-				break; 
-		}
-	}
 }

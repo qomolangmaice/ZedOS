@@ -21,7 +21,7 @@ void clear_line(uint8 startline, uint8 endline)
 
 void update_cursor()
 {
- 	unsigned cursor_loc; 
+ 	int cursor_loc; 
 
 	cursor_loc = cursor_y * 80 + cursor_x;    // Cursor Position = (y * width) + x  
 
