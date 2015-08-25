@@ -2,10 +2,10 @@
 S_SOURCES = $(wildcard boot/*.s) 
 S_OBJECTS = $(S_SOURCES:.s=.o) 
 
-C_SOURCES = $(wildcard kernel/*.c cpu/*.c drivers/*.c libc/*.c libc/printk/*.c mm/*.c) 
+C_SOURCES = $(wildcard kernel/*.c cpu/*.c drivers/*.c libc/*.c libc/printk/*.c) 
 C_OBJECTS = $(C_SOURCES:.c=.o) 
 
-HEADERS = $(wildcard kernel/*.h cpu/*.h drivers/*.h libc/*.h /libc/printk/*.h mm/*.h) 
+HEADERS = $(wildcard kernel/*.h cpu/*.h drivers/*.h libc/*.h /libc/printk/*.h) 
 
 OBJECTS = $(S_OBJECTS) $(C_OBJECTS)    
 
@@ -26,8 +26,12 @@ ZedOS.iso: kernel.bin
 	cp kernel.bin ZedOS/boot/kernel.bin   
 	grub-mkrescue -o ZedOS.iso ZedOS/  
 
-run: ZedOS.iso  
+iso_run: ZedOS.iso  
 	qemu-system-i386 ZedOS.iso    
+
+bin_run: kernel.bin  
+	qemu-system-i386 -kernel kernel.bin     
+
 
 %.o: %.c ${HEADERS}     
 	${CC} ${CFLAGS} $< -o $@ -ffreestanding 
