@@ -5,6 +5,7 @@
 #include "../cpu/timer.h" 
 #include "../mm/multiboot.h" 
 #include "../mm/pmm.h" 
+#include "../drivers/tty.h" 
 
 kmain()
 {
@@ -23,14 +24,4 @@ kmain()
 	init_keyboard(); 
 	asm volatile ("sti"); 
 	for(;;); 
-	
- /*	
-	printf("kernel in memory start: 0x%08x\n", kern_start); 
-	printf("kernel in memory end: 0x%08x\n", kern_end); 
-	printf("kernel in memory used: %d KB\n\n", (kern_end - kern_start) + 1023); 
-
-	show_memory_map(); 
-
-	return 0; 
-	*/
 }

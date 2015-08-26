@@ -8,6 +8,7 @@
 
 #ifndef	KEYBOARD_H 
 #define	KEYBOARD_H 
+#include "tty.h" 
 
 
 /************************************************************************/
@@ -139,6 +140,7 @@ typedef struct s_kb {
 	char	buf[KB_IN_BYTES];	/* Buffer size */
 }KB_INPUT;
 
-void keyboard_read(); 
-void init_keyboard(); 
+void keyboard_read(TTY *p_tty);  
+void init_keyboard();    
+
 #endif 

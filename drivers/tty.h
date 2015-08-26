@@ -28,8 +28,10 @@ typedef struct s_tty
 
 TTY tty_table[NR_CONSOLES]; 
 
+void task_tty();  
 static void init_tty(TTY *p_tty); 
 static void tty_do_read(TTY *p_tty); 
 static void tty_do_write(TTY *p_tty); 
+void in_process(TTY *p_tty, uint32 key);  
 
 #endif 

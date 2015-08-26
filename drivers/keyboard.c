@@ -12,6 +12,7 @@
 #include "../cpu/isr.h" 
 #include "../cpu/irq.h" 
 #include "screen.h" 
+#include "tty.h" 
 
 #define KB_INPUT_PORT  0x60  
 
@@ -29,7 +30,7 @@ static int scroll_lock; 	 	/* Scroll Lock */
 static int column; 	 	 	 	
 
 uint8 get_byte_from_kbuf(); 
-void in_process(uint32 key); 
+void keyboard_read(TTY *p_tty);  
 /*======================================================================*
                             keyboard_handler
  *======================================================================*/
@@ -50,8 +51,7 @@ void keyboard_handler(registers_t *regs)
 		}
 		kbinput.count++;
 	}
-
-	keyboard_read();
+	//keyboard_read(p_tty); 
 }
 
 /*======================================================================*
@@ -63,7 +63,7 @@ void init_keyboard()
 	kbinput.count = 0;
 	kbinput.p_head = kbinput.p_tail = kbinput.buf;
 
-	/* IRQ1 is the number of keyboard handler,   */
+	/* IRQ1 is the number of keyboard interrupt */
 	register_interrupt_handler(IRQ1, keyboard_handler);	/* Setup keyboard handler */
 }
 
@@ -72,7 +72,7 @@ void init_keyboard()
 *======================================================================*/
 
 /* Analysis ScanCode */
-void keyboard_read()
+void keyboard_read(TTY *p_tty)
 {
 	uint8 scan_code;
  	uint8 make;	/* TRUE : make , FALSE: break */
@@ -205,7 +205,7 @@ void keyboard_read()
 				key |= alt_l   ? FLAG_ALT_L   : 0; 
 				key |= alt_r   ? FLAG_ALT_R   : 0; 
 
-				in_process(key); 
+				in_process(p_tty, key); 	/* In tty.c */ 
 			}
 		}
 	}
@@ -229,43 +229,3 @@ uint8 get_byte_from_kbuf() 	/* Read the next byte from keboard buffer */
 	return scan_code; 
 }
 
-/*  */
-void in_process(uint32 key)
-{
- 	/* Clean output array */
-	/* memory_set(output, 0, 2); */  
-	char output[2] = {'\0', '\0'}; 
-	
-	if(!(key & FLAG_EXT)) 
-	{
-		output[0] = key & 0xFF; 
-		print(output); 
-	}
-
-	else
-	{
-		int raw_code = key & MASK_RAW; 
-
-		switch(raw_code)
-		{
-			case UP: 
-				if((key & FLAG_SHIFT_L) || (key & FLAG_SHIFT_R)) 
-				{
-					asm volatile ("cli"); 
-					outportb(CRTC_ADDR_REG, START_ADDR_H); 
-					outportb(CRTC_DATA_REG, ((80*15) >> 8) & 0xFF); 
-					outportb(CRTC_ADDR_REG, START_ADDR_L); 
-					outportb(CRTC_DATA_REG, (80*15) & 0xFF); 
-					asm volatile ("sti"); 
-				}
-				break; 
-			case DOWN: 
-				if ((key & FLAG_SHIFT_L) || (key & FLAG_SHIFT_L)) 
-				{
-				}
-				break; 
-			default: 
-				break; 
-		}
-	}
-}
