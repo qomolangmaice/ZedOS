@@ -13,15 +13,19 @@ If you want to compile this os and run it, here is the steps:
 
  $ make 
 
-2. Compile, link and run ZedOS.iso(in qemu).
+2. Compile, link and run kernel.bin(in qemu).
 
- $ make run 
+ $ make bin_run 
 
-3. If you want generate the new ZedOS.iso, you should delete all object files and ZedOS.iso at first.  
+3. Compile, link and run ZedOS.iso(in qemu).
+
+ $ make iso_run 
+
+4. If you want generate the new ZedOS.iso, you should delete all object files and ZedOS.iso at first.  
 
  $ make clean 
 
-4. If you want to try this os in a real machine, you can burn ZedOS.iso into an U-disk. 
+5. If you want to try this os in a real machine, you can burn ZedOS.iso into an U-disk. 
 
  $ sudo dd if=Zed.iso of=/dev/sdb1 bs=2M (depends on your device conditions)
  
