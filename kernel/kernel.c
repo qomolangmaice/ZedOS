@@ -9,7 +9,7 @@
 
 kmain()
 {
-	//clear_screen(); 
+	clear_screen(); 
 	print_with_color("\nWelcome to Zed Operating System!", rc_red); 
 	print_with_color("\nPlease enter a command.\n", rc_red); 
 	print("\n"); 
@@ -19,9 +19,10 @@ kmain()
 	print("\nInitializing IDT ...\n");  
 	idt_install(); 
 
+	task_tty(); 
 	//init_timer(200); 
 	/* Test for keyboard */
-	init_keyboard(); 
-	asm volatile ("sti"); 
-	for(;;); 
+	//init_keyboard(); 
+	//asm volatile ("sti"); 
+	//for(;;); 
 }

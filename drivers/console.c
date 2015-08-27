@@ -10,9 +10,38 @@
 #include "../libc/system.h" 
 #include "keyboard.h" 
 #include "../libc/types.h" 
+#include "tty.h" 
 
 int32 disp_pos = 0; 
 static void set_cursor(uint32 position); 
+static void set_video_start_addr(uint32 addr); 
+void init_screen(TTY *p_tty);  
+
+void init_screen(TTY *p_tty) 
+{
+	int nr_tty = p_tty - tty_table; 
+	p_tty->p_console = console_table + nr_tty; 
+
+	int v_mem_size = V_MEM_SIZE >> 1; 
+
+	int con_v_mem_size = v_mem_size / NR_CONSOLES; 
+	p_tty->p_console->original_addr = nr_tty * con_v_mem_size; 
+	p_tty->p_console->v_mem_limit = con_v_mem_size; 
+	p_tty->p_console->current_start_addr = p_tty->p_console->original_addr; 
+	p_tty->p_console->cursor = p_tty->p_console->original_addr; 
+
+	if(nr_tty == 0) 
+	{
+		p_tty->p_console->cursor = disp_pos / 2; 
+		disp_pos = 0; 
+	}
+	else
+	{
+		out_char(p_tty->p_console, nr_tty + '0'); 
+		out_char(p_tty->p_console, '#'); 
+	}
+	set_cursor(p_tty->p_console->cursor); 
+}
 
 int32 is_current_console(CONSOLE *p_con)
 {
@@ -21,13 +50,13 @@ int32 is_current_console(CONSOLE *p_con)
 
 void out_char(CONSOLE *p_con, char ch)
 {
-	uint8 *p_vmem = (uint8 *)(V_MEM_BASE + disp_pos); 
+	uint8 *p_vmem = (uint8 *)(V_MEM_BASE + p_con->cursor * 2); 
 
 	*p_vmem++ = ch; 
 	*p_vmem++ = DEFAULT_CHAR_COLOR; 
-	disp_pos += 2; 
+	p_con->cursor++; 
 
-	set_cursor(disp_pos/2); 
+	set_cursor(p_con->cursor); 
 }
 
 static void set_cursor(uint32 position)
@@ -38,4 +67,25 @@ static void set_cursor(uint32 position)
 	outportb(CRTC_ADDR_REG, CURSOR_L); 
 	outportb(CRTC_DATA_REG, position & 0xFF); 
 	asm volatile ("sti"); 
+}
+
+static void set_video_start_addr(uint32 addr)
+{
+	asm volatile ("cli"); 
+	outportb(CRTC_ADDR_REG, START_ADDR_H); 
+	outportb(CRTC_DATA_REG, (addr >> 8) & 0xFF); 
+	outportb(CRTC_ADDR_REG, START_ADDR_L); 
+	outportb(CRTC_DATA_REG, addr & 0xFF); 
+	asm volatile ("sti"); 
+}
+
+void select_console(int nr_console) 	
+{
+	if((nr_console < 0) || (nr_console >= NR_CONSOLES)) 
+		return;  
+
+	nr_current_console = nr_console; 
+
+	set_cursor(console_table[nr_console].cursor); 
+	set_video_start_addr(console_table[nr_console].current_start_addr); 
 }

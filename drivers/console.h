@@ -10,6 +10,7 @@
 #define NR_CONSOLES  3 	 	/* consoles */
 #define DEFAULT_CHAR_COLOR 	0x07 	/* 0000 0111 Black background and white word */
 #include "../libc/types.h" 
+#include "tty.h" 
 
 typedef struct s_console
 {
@@ -24,5 +25,6 @@ CONSOLE console_table[NR_CONSOLES];
 int nr_current_console; 
 int32 is_current_console(CONSOLE *p_con);  
 void out_char(CONSOLE *p_con, char ch);  
+void select_console(int nr_console); 	
 
 #endif 
