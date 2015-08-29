@@ -3,7 +3,7 @@
  *     Description: 
  *     Author: iczelion
  *     Email: qomolangmaice@163.com 
- *     Created: 2015:08:25 Tue 21:55:30 
+ *     Created: 2015.08.25 Tue 21:55:30 
  */
 #ifndef TTY_H 
 #define TTY_H 
@@ -19,14 +19,16 @@ struct s_console;
 typedef struct s_tty
 {
 	uint32 in_buf[TTY_IN_BYTES]; 	/* TTY input buffer */
-	uint32 *p_inbuf_head; 	 	 	/* Point to the next empty */
-	uint32 *p_inbuf_tail;  	 	 	/* Point to the key value  */
-	int inbuf_count; 	 	 	 	
+	uint32 *p_inbuf_head; 	 	 	/* Point to the next empty location */
+	uint32 *p_inbuf_tail;  	 	 	/* Point to the key value that should be handled */
+	int inbuf_count; 	 	 	    /* Counts of input characters in buffer */	
 
 	struct s_console *p_console; 
 }TTY; 
 
 TTY tty_table[NR_CONSOLES]; 
+#define TTY_FIRST 	(tty_table) 
+#define TTY_END   	(tty_table + NR_CONSOLES) 
 
 void task_tty();  
 static void init_tty(TTY *p_tty); 

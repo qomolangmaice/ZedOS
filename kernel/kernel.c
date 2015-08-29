@@ -9,9 +9,10 @@
 
 kmain()
 {
-	clear_screen(); 
+	//clear_screen(); 
+	
+	print_with_color("\nThis is tty1.", rc_green); 
 	print_with_color("\nWelcome to Zed Operating System!", rc_red); 
-	print_with_color("\nPlease enter a command.\n", rc_red); 
 	print("\n"); 
 
 	print("Initializing GDT ...");  
@@ -19,8 +20,12 @@ kmain()
 	print("\nInitializing IDT ...\n");  
 	idt_install(); 
 
+	/* Test for TTY and consoles */
 	task_tty(); 
+
+	/* Test for timer */
 	//init_timer(200); 
+	
 	/* Test for keyboard */
 	//init_keyboard(); 
 	//asm volatile ("sti"); 

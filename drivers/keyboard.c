@@ -30,7 +30,6 @@ static int scroll_lock; 	 	/* Scroll Lock */
 static int column; 	 	 	 	
 
 uint8 get_byte_from_kbuf(); 
-void keyboard_read(TTY *p_tty);  
 /*======================================================================*
                             keyboard_handler
  *======================================================================*/
@@ -51,7 +50,6 @@ void keyboard_handler(registers_t *regs)
 		}
 		kbinput.count++;
 	}
-	//keyboard_read(p_tty); 
 }
 
 /*======================================================================*
@@ -149,7 +147,7 @@ void keyboard_read(TTY *p_tty)
 			/* Judge the scancode is Make Code or Break Code */
 			make = (scan_code & FLAG_BREAK ? FALSE : TRUE);
 
-			/* Firstly, Locate in the rows of keymap array */
+			/* Firstly, Locate the rows of keymap array */
 			keyrow = &keymap[(scan_code & 0x7F) * MAP_COLS]; 
 
 			column = 0; 
@@ -211,7 +209,7 @@ void keyboard_read(TTY *p_tty)
 	}
 }
 
-uint8 get_byte_from_kbuf() 	/* Read the next byte from keboard buffer */	
+uint8 get_byte_from_kbuf() 	/* Read the next byte from keyboard buffer */	
 {
 	uint8 scan_code; 
 

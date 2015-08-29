@@ -3,7 +3,7 @@
  *     Description: 
  *     Author: iczelion
  *     Email: qomolangmaice@163.com 
- *     Created: 2015:08:25 Tue 23:12:29 
+ *     Created: 2015.08.25 Tue 23:12:29 
  */
 
 #include "tty.h" 
@@ -11,8 +11,6 @@
 #include "keyboard.h" 
 #include "screen.h" 
 
-#define TTY_FIRST 	(tty_table) 
-#define TTY_END   	(tty_table + NR_CONSOLES) 
 extern int nr_current_console; 
 
 void task_tty() 
@@ -41,8 +39,6 @@ static void init_tty(TTY *p_tty)
  	p_tty->inbuf_count = 0; 
 	p_tty->p_inbuf_head = p_tty->p_inbuf_tail = p_tty->in_buf; 
 
-	//int nr_tty = p_tty - tty_table; 
-	//p_tty->p_console = console_table + nr_tty; 
 	init_screen(p_tty); 
 }
 
@@ -71,18 +67,13 @@ void in_process(TTY *p_tty, uint32 key)
 			case UP:
 				if((key & FLAG_SHIFT_L) || (key &FLAG_SHIFT_R))
 				{
-					asm volatile ("cli"); 
-					outportb(CRTC_ADDR_REG, START_ADDR_H); 
-					outportb(CRTC_DATA_REG, ((80*15) >> 8) & 0xFF); 
-					outportb(CRTC_ADDR_REG, START_ADDR_L); 
-					outportb(CRTC_DATA_REG, (80*15) & 0xFF); 
-					asm volatile ("sti"); 
+			 	 	scroll_screen(p_tty->p_console, SCR_DN); 
 				}
 				break; 
  	 	 	case DOWN:
 				if((key & FLAG_SHIFT_L) || (key &FLAG_SHIFT_R))
 				{
-				
+			 	 	scroll_screen(p_tty->p_console, SCR_UP); 
 				}
 				break; 
 			case F1: 
@@ -97,6 +88,7 @@ void in_process(TTY *p_tty, uint32 key)
 			case F10: 
 			case F11: 
 			case F12: 
+				/* Alt + F1 - F12 */
 				if((key & FLAG_ALT_L) || (key & FLAG_ALT_R)) 
 				{
 					select_console(raw_code - F1); 

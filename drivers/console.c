@@ -12,7 +12,9 @@
 #include "../libc/types.h" 
 #include "tty.h" 
 
-int32 disp_pos = 0; 
+/* Current cursor position */
+int32 disp_pos = 1440; 
+
 static void set_cursor(uint32 position); 
 static void set_video_start_addr(uint32 addr); 
 void init_screen(TTY *p_tty);  
@@ -32,6 +34,7 @@ void init_screen(TTY *p_tty)
 
 	if(nr_tty == 0) 
 	{
+		/* The cursor location of the first console */
 		p_tty->p_console->cursor = disp_pos / 2; 
 		disp_pos = 0; 
 	}
@@ -39,6 +42,7 @@ void init_screen(TTY *p_tty)
 	{
 		out_char(p_tty->p_console, nr_tty + '0'); 
 		out_char(p_tty->p_console, '#'); 
+		out_char(p_tty->p_console, ' '); 
 	}
 	set_cursor(p_tty->p_console->cursor); 
 }
@@ -79,7 +83,7 @@ static void set_video_start_addr(uint32 addr)
 	asm volatile ("sti"); 
 }
 
-void select_console(int nr_console) 	
+void select_console(int nr_console) 	/* 0 - (NR_CONSOLES - 1) */	
 {
 	if((nr_console < 0) || (nr_console >= NR_CONSOLES)) 
 		return;  
@@ -88,4 +92,27 @@ void select_console(int nr_console)
 
 	set_cursor(console_table[nr_console].cursor); 
 	set_video_start_addr(console_table[nr_console].current_start_addr); 
+}
+
+void scroll_screen(CONSOLE* p_con, int direction)
+{
+	if(direction == SCR_UP) 
+	{
+		if(p_con->current_start_addr > p_con->original_addr)
+		{
+			p_con->current_start_addr -= SCREEN_WIDTH; 
+		}
+	}
+	else if (direction == SCR_DN)
+	{
+		if(p_con->current_start_addr + SCREEN_SIZE <
+		   p_con->original_addr + p_con->v_mem_limit) 
+		{
+			p_con->current_start_addr += SCREEN_WIDTH; 
+		}
+	}
+	else {}
+
+	set_video_start_addr(p_con->current_start_addr); 
+	set_cursor(p_con->cursor); 
 }
