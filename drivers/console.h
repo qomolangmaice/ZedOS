@@ -29,9 +29,19 @@ typedef struct s_console
 CONSOLE console_table[NR_CONSOLES];  
 
 int nr_current_console; 
+
 int32 is_current_console(CONSOLE *p_con);  
+
 void out_char(CONSOLE *p_con, char ch);  
+
 void select_console(int nr_console); 	
+
 void scroll_screen(CONSOLE* p_con, int direction);  
+
+static void flush(CONSOLE *p_tty);  
+
+static void set_cursor(uint32 position); 
+
+static void set_video_start_addr(uint32 addr); 
 
 #endif 
