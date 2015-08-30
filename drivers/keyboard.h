@@ -10,7 +10,6 @@
 #define	KEYBOARD_H 
 #include "tty.h" 
 
-
 /************************************************************************/
 /*                          Macros Declaration                          */
 /************************************************************************/
@@ -129,13 +128,25 @@
 #define V_MEM_BASE 	  0xB8000 	/* base of color video memory */
 #define V_MEM_SIZE 	  0x8000 	/* 32K: B8000H -> BFFFFH */
 
+/* Set Caps_lock, nums_lock, scroll_lock */
+#define LED_CODE 0xED 
+#define KB_ACK 0xFA 
+
+#define KB_DATA  0x60 	  	   	/* I/O port for keyboard data 
+ 	 	 	 	 	 	 	 	 * Read: Read output buffer  
+								 * Write: Write Input buffer(8042 & 8048 command  
+								 */
+#define KB_CMD 0x64 	 	    /* I/O port for keyboard command 	
+ 	 	 	 	 	 	 	 	 * Read: ReadStatus Register  
+								 * Write: Write Input BUffer(8042 Command)   
+								 */
 /************************************************************************/
 /*                         Stucture Definition                          */
 /************************************************************************/
 /* Keyboard structure, 1 per console. */
 typedef struct s_kb {
-	char*	p_head;			/* Point to the empty block in buffer */
-	char*	p_tail;			/* Point to the byte which is handled by keyboard */
+	char   	*p_head;			/* Point to the empty block in buffer */
+	char	*p_tail;			/* Point to the byte which is handled by keyboard */
 	int	count;			/* count = p_head - p_tail */
 	char	buf[KB_IN_BYTES];	/* Buffer size */
 }KB_INPUT;
