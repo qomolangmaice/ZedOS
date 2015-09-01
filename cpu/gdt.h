@@ -29,7 +29,7 @@ static struct {
 	gdt_ptr_t  	pointer; 
 } gdt __attribute__((used)); 
 
-/*  function 'gdt_flush()' is defined in /boot/loader.asm   */
+/*  function 'gdt_flush()' is defined in /boot/boot.s   */
 extern void gdt_flush(uint32); 
 
 static void gdt_set_gate(

@@ -31,3 +31,26 @@ kmain()
 	//asm volatile ("sti"); 
 	//for(;;); 
 }
+
+void TestA() 
+{
+	int i = 0; 
+	while(1)
+	{
+		print("A."); 
+		printf("%d", i++); 
+		delay(1); 
+	}
+}
+
+void delay(int time) 
+{
+	int i, j, k; 
+	for(k=0; k<time; k++)
+	{
+		for(i=0; i<10; i++)
+		{
+			for(j=0; j<10000; j++) {} 
+		}
+	}
+}
