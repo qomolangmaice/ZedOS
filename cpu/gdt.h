@@ -1,6 +1,7 @@
 #ifndef GDT_H 
 #define GDT_H 
 #include "../libc/types.h" 
+#include "tss.h" 
 
 // This structure contains the value of one GDT entry.
 // We use the attribute 'packed' to tell GCC not to change
@@ -25,8 +26,9 @@ typedef struct gdt_pointer_struct{
 
 
 static struct {
- 	gdt_entry_t entries[5]; 
+ 	gdt_entry_t entries[6]; 
 	gdt_ptr_t  	pointer; 
+	tss_entry_t tss; 
 } gdt __attribute__((used)); 
 
 /*  function 'gdt_flush()' is defined in /boot/boot.s   */

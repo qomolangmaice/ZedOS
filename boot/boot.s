@@ -44,19 +44,17 @@ start:
                                 ; executing whatever rubbish is in the memory
                                 ; after our kernel!
 
-restart: 
-	mov esp, [p_proc_ready] 	 	 	; Next process address that will be started  
-	lldt [esp + P_LDT_SEL] 
-	lea eax, [esp, P_STACKTOP] 
-	mov dword [tss + TSS3_S_SP0], eax 
+;restart: 
+;	mov esp, [p_proc_ready] 	 	 	; Next process address that will be started  
+;	lldt [esp + P_LDT_SEL] 
+;	lea eax, [esp, P_STACKTOP] 
+;	mov dword [tss + TSS3_S_SP0], eax 
 
-restart_reenter: 
-	dec, dword [k_reenter] 
-	pop gs 
-	pop fs 
-	pop es 
-	pop ds 
-	popad 
-	add esp, 4 
-	iretd 
+;	pop gs 
+;	pop fs 
+;	pop es 
+;	pop ds 
+;	popad 
+;	add esp, 4 
+;	iretd 
 
