@@ -118,8 +118,8 @@ typedef struct s_stackframe
 
 typedef struct s_proc
 {
-	STACK_FRAME regs;  	 	  	 	/* process reigisters saved in stack frame */ 
-	uint16 ldy_sel; 	 	 	 	/* gdt selectoe givind ldt base and limit */ 
+	STACK_FRAME regs;  	 	  	 	/* process registers saved in stack frame */ 
+	uint16 ldt_sel; 	 	 	 	/* gdt selector giving ldt base and limit */ 
 	DESCRIPTOR ldts[LDT_SIZE]; 	 	/* local descriptor for code and data */ 
 	uint32 pid; 	 	 	 	 	/* process id passed in from MM */ 
 	char p_name[16];  	 	 		/* name of the process */ 
