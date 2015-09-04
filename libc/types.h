@@ -15,4 +15,7 @@ typedef unsigned long long uint64;
 
 typedef char* string; 
 
+/* In 32 bit system */
+typedef int size_t; 
+
 #endif   
