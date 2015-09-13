@@ -1,100 +1,33 @@
 /*
- *     File Name: mm.c
- *     Description: Kernel Memory Management  
+ *     File Name: paging.c
+ *     Description: Defines the interface for and structures relating to paging.  
  *     Author: iczelion
  *     Email: qomolangmaice@163.com 
  *     Created: 2015.09.04 Fri 15:17:26
  */
-#include "mm.h" 
+#include "paging.h" 
+#include "kheap.h" 
 #include "../libc/types.h" 
 #include "../cpu/irq.h" 
 #include "../drivers/screen.h" 
 #include "../libc/printf.h" 
 
-extern void *end; 
-uint32 placement_pointer = (uint32)&end; 
-//uint32 heap_end = (uint32)NULL; 
+/* The kernel's page directory */
+page_directory_t *kernel_directory = 0; 
 
-void kmalloc_startat(uint32 address) 
-{
-	placement_pointer = address; 
-}
+/* The kernel's page directory */
+page_directory_t *current_directory = 0; 
 
-/* kmalloc is the kernel's dumb placement allocator */
-uint32 kmalloc_real(size_t size, int align, uint32 *phys) 
-{
-	/*
-	if(heap_end)
-	{
-		void *address; 
-		if(align)
-		{
-			address = valloc(size); 
-	 	}
-		else 
-		{
-			address = malloc(size); 
-		}
-
-		if(phys)
-		{
-			page_t *page = get_page((uint32)address, 0, kernel_direcotry); 
-			*phys = page->frame * 0x1000 + ((uint32)address & 0xFFF); 
-		}
-		return (uint32)address; 
-	}
-	*/ 
-
-	/* If the address is not already page-aligned */
-	if(align && (placement_pointer & 0xFFFF000)) 
-	{
-		/* Align it */
-		placement_pointer &= 0xFFFF000; 
-		placement_pointer += 0x1000; 	 
-	}
-	if(phys)
-	{
-		*phys = placement_pointer; 
-	}
-
-	uint32 address = placement_pointer; 
-	placement_pointer += size; 
-
-	return (uint32)address; 
-}
-
-/* Normal */
-uint32 kmalloc(size_t size)
-{
-	return kmalloc_real(size, 0, NULL); 
-}
-
-/* Aligned */
-uint32 kvmalloc(size_t size)
-{
-	return kmalloc_real(size, 1, NULL); 
-}
-
-/* With a physical address */
-uint32 kmalloc_p(size_t size, uint32 *phys)
-{
-	return kmalloc_real(size, 0, phys); 
-}
-
-/* Aligned, with a physical address */
-uint32 kvmalloc_p(size_t size, uint32 *phys) 
-{
-	return kmalloc_real(size, 1, phys); 
-}
-
-/************************ Frame Allocation *************************/
-/* A bitset of frames - used or free */
+/* A bitset of frames - used or free. */
 uint32 *frames; 
 uint32 nframes; 
 
-/* Macros used i the bitset algorithms */
-#define INDEX_FROM_BIT(b) (b / 0x20) 
-#define OFFSET_FROM_BIT(b) (b % 0x20) 
+/* Defined in kheap.c */
+extern uint32 placement_address; 
+
+/* Macros used in the bitset algorithms.  */
+#define INDEX_FROM_BIT(a) 	(a / (8 * 4)) 
+#define OFFSET_FROM_BIT(a) 	(a % (8 * 4)) 
 
 /* Static function to clear a bit in the frames bitset */
 static void set_frame(uint32 frame_addr) 
@@ -128,17 +61,17 @@ static uint32 first_frame()
 {
 	uint32 i, j; 
 	
-	for(i = 0; i < INDEX_FROM_BIT(nframes); ++i) 
+	for(i = 0; i < INDEX_FROM_BIT(nframes); i++) 
 	{
 		if(frames[i] != 0xFFFFFFFF) 	/* Nothing free, exit early */ 
 		{
 			/* at least one bit is free here */
-			for(j = 0; j < 32; ++j) 
+			for(j = 0; j < 32; j++) 
 			{
 				uint32 testFrame = 0x1 << j; 
 				if(!(frames[i] & testFrame)) 
 				{
-					return i * 0x20 + j; 
+					return i*4*8 + j; 
 				}
 			}
 		}
@@ -150,8 +83,8 @@ void alloc_frame(page_t *page, int is_kernel, int is_writeable)
 {
 	if(page->frame != 0)
 	{
-		page->rw = (is_writeable == 1) ? 1 : 0; 
-		page->user = (is_kernel == 1) ? 1 : 0; 
+		//page->rw = (is_writeable == 1) ? 1 : 0; 
+		//page->user = (is_kernel == 1) ? 1 : 0; 
 		return;
 	}
 	else
@@ -167,8 +100,8 @@ void alloc_frame(page_t *page, int is_kernel, int is_writeable)
 		}
 		set_frame(index * 0x1000); 	/* This frame is now ours */ 
 		page->present = 1; 	 	 	/* Make it as present */ 
-		page->rw = (is_writeable == 1) ? 1 : 0; /* Should the page be wriatable? */ 
-		page->user = (is_kernel == 1) ? 1: 0; 	/* Should th page be user-mode? */ 
+		page->rw = (is_writeable) ? 1 : 0; /* Should the page be wriatable? */ 
+		page->user = (is_kernel) ? 0 : 1; 	/* Should th page be user-mode? */ 
 		page->frame = index; 
 	}
 }
@@ -184,28 +117,15 @@ void free_frame(page_t *page)
 	}
 	else
 	{
-		clear_frame(frame * 0x1000); 	/* Frame is now free again */
+		//clear_frame(frame * 0x1000); 	/* Frame is now free again */
+		clear_frame(frame); 	/* Frame is now free again */
 		page->frame = 0x0;  	/* Page now doesn't have a frame */
 	}
 }
 
-/*
-void dma_frame(page_t *page, int is_kernel, int is_writeable) 
+void initialise_paging() 
 {
-}
-
-uint32 memory_use() 
-{
-}
-
-uint32 memory_total()  
-{
-}
-*/ 
-
-//void paging_install(uint32 memsize) 
-void paging_install() 
-{
+	print("Setup paging..."); 
 	/* The size of physical memory. For moment we assume it is 16MB */
  	uint32 mem_end_page = 0x1000000; 
 
@@ -214,8 +134,7 @@ void paging_install()
 	memory_set(frames, 0, INDEX_FROM_BIT(nframes)); 
 
 	/* Let's make a page directory */
-	kernel_directory = (page_directory_t *)kvmalloc(sizeof(page_directory_t)); 
-	memory_set(kernel_directory, 0, sizeof(page_directory_t)); 
+	kernel_directory = (page_directory_t*)kmalloc_a(sizeof(page_directory_t)); 
 	current_directory = kernel_directory; 
 
 	int i = 0; 
@@ -236,7 +155,7 @@ void paging_install()
 void switch_page_directory(page_directory_t *dir)
 {
 	current_directory = dir; 
-	asm volatile("mov %0, %%cr3":: "r"(&dir->physical_address)); 
+	asm volatile("mov %0, %%cr3":: "r"(&dir->physical_tables)); 
 	uint32 cr0; 
 	asm volatile("mov %%cr0, %0": "=r"(cr0)); 
 	cr0 |= 0x80000000; 	/* Enable paging */ 
@@ -270,8 +189,7 @@ page_t *get_page(uint32 address, int make, page_directory_t *dir)
 	else if(make) 
 	{
 		uint32 temp; 
-		dir->tables[table_index] = (page_table_t *)kvmalloc_p(sizeof(page_table_t), (uint32 *)(&temp)); 
-		memory_set(dir->tables[table_index], 0, sizeof(page_table_t)); 
+		dir->tables[table_index] = (page_table_t *)kmalloc_ap(sizeof(page_table_t), &temp); 
 		dir->physical_tables[table_index] = temp | 0x7; 	/* Present, R/W, user */
 		return &dir->tables[table_index]->pages[address % 1024]; 
 	}
@@ -289,13 +207,13 @@ void page_fault(registers_t *regs)
 	asm volatile("mov %%cr2, %0":  "=r" (faulting_address)); 
 
 	/* The error code gives us details of what happened */
-	int present = !(regs->err_code & 0x1); 	/* Page not present */ 
-	int rw = regs->err_code & 0x2; 	 	 	/* Write operation ? */ 
-	int user = regs->err_code & 0x4; 	 	 	/* Processor wae in user-mode */ 
-	int reserved = regs->err_code & 0x8; 	/* Overwriteen CPU-reserved bits of page entry */ 
-	int id = regs->err_code & 0x10;  	 	/* Casued by an instruction fetch */
+	int present = !((regs->err_code) & 0x1); 	/* Page not present */ 
+	int rw = (regs->err_code) & 0x2; 	 	 	/* Write operation ? */ 
+	int user = (regs->err_code) & 0x4; 	 	 	/* Processor wae in user-mode */ 
+	int reserved = (regs->err_code) & 0x8; 	/* Overwriteen CPU-reserved bits of page entry */ 
+	int id = (regs->err_code) & 0x10;  	 	/* Casued by an instruction fetch */
 
+ 	print("\nPage fault!\n"); 
 	/* Output an error message */
-	printf("Segmentation fault.(p: %d, rw: %d, user:%d, reserved: %d, id: %d)", present, rw, user, reserved);  
- 	print("\nPage fault"); 
+	printf("Segmentation fault.(p: %d, rw: %d, user:%d, reserved: %d, id: %d)\n", present, rw, user, reserved);  
 }

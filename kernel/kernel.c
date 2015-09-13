@@ -3,8 +3,7 @@
 #include "../cpu/gdt.h" 
 #include "../cpu/idt.h" 
 #include "../cpu/timer.h" 
-#include "../mm/multiboot.h" 
-#include "../mm/mm.h" 
+#include "../mm/paging.h" 
 #include "../drivers/tty.h" 
 
 kmain()
@@ -12,19 +11,19 @@ kmain()
 	//clear_screen(); 
 	
 	print_with_color("\nThis is tty1.", rc_green); 
-	print_with_color("\nWelcome to Zed Operating System!", rc_red); 
+	print_with_color("\nWelcome to Zed Operating System! ^_^", rc_red); 
 	print("\n"); 
 
-	print("Initializing GDT ...");  
+	print("Initializing GDT. :P");  
 	gdt_install();  
-	print("\nInitializing IDT ...\n");  
+	print("\nInitializing IDT. :P\n");  
 	idt_install(); 
 
-	/* Test for TTY and consoles */
-	//task_tty(); 
+ 	initialise_paging(); 
+	print("\nSetup Paging over. :)\n");  
 
-	print("Setup Paging mechanism ...");  
- 	paging_install(); 
+	/* Test for TTY and consoles */
+	task_tty(); 
 
 	//int i = 5/0; 
 
