@@ -1,10 +1,10 @@
-#include "drivers/keyboard.h" 
-#include "drivers/screen.h" 
-#include "cpu/gdt.h" 
-#include "cpu/idt.h" 
-#include "cpu/timer.h" 
-#include "mm/paging.h" 
-#include "drivers/tty.h" 
+#include "../drivers/keyboard.h" 
+#include "../drivers/screen.h" 
+#include "../cpu/gdt.h" 
+#include "../cpu/idt.h" 
+#include "../cpu/timer.h" 
+#include "../mm/paging.h" 
+#include "../drivers/tty.h" 
 
 kmain()
 {
@@ -19,14 +19,15 @@ kmain()
 	print("\nInitializing IDT. :P\n");  
 	idt_install(); 
 
- 	initialise_paging(); 
-	print("\nSetup Paging over. :)\n");  
+ 	//initialise_paging(); 
+	//print("\nSetup Paging over. :)\n");  
+	printf("\n%c--This is No.%d Test printf in address 0x%X.:)\n", 'Z', 1, 0xFFFFFFFF);  
 
 	/* Test divide zero error interrupt */
 	//int i = 5/0; 
 
-	uint32 *ptr = (uint32 *)0xA0000000; 
-	uint32 do_page_fault = *ptr; 
+	//uint32 *ptr = (uint32 *)0xA0000000; 
+	//uint32 do_page_fault = *ptr; 
 
  	/* Test for TTY and consoles */
 	task_tty(); 
