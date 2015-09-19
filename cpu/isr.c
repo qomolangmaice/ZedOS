@@ -2,7 +2,7 @@
 #include "idt.h" 
 #include "../libc/types.h" 
 #include "../libc/string.h" 
-#include "../drivers/screen.h" 
+#include "../libc/printf.h" 
 
 void isr_install()
 {
@@ -83,13 +83,17 @@ char *exception_messages[] = {
 
 void isr_handler(registers_t *regs) 
 {
+	/*
 	char s[3]; 
 
-	print("received interrupt: ["); 
+	printk("received interrupt: ["); 
  	int_to_ascii(regs->int_no, s); 
-	print(s); 
-	print("], "); 
-	print(exception_messages[regs->int_no]); 
-	print("\n"); 
+	printk(s); 
+	printk("], "); 
+	printk(exception_messages[regs->int_no]); 
+	printk("\n"); 
+	*/ 
+
+	printf("received interrupt: [%d], %s\n", regs->int_no, exception_messages[regs->int_no]); 
 }
 

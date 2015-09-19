@@ -11,7 +11,7 @@
 #include "keymap.h"
 #include "../cpu/isr.h" 
 #include "../cpu/irq.h" 
-#include "screen.h" 
+//#include "screen.h" 
 #include "tty.h" 
 
 #define KB_INPUT_PORT  0x60  

@@ -34,6 +34,16 @@ uint16 str_len(string ch)
 	return count; 	 	 	// changed counter to i instead of --i  
 }
 
+inline int strlen(const char *src) 
+{
+	const char *eos = src; 
+
+	while (*eos++) 
+		; 
+
+	return (eos - src - 1); 
+}
+
 
 // Added in episode 3
 // This function compares two strings 

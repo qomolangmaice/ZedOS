@@ -4,7 +4,10 @@
 #include "types.h" 
 
 void memory_set(void *dest, uint8 val, uint32 len);  
+
 uint16 str_len(string ch);  
+
+inline int strlen(const char *src);  
 
 void int_to_ascii(int n, char str[]);  
 

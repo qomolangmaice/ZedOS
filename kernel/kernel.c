@@ -1,28 +1,26 @@
 #include "../drivers/keyboard.h" 
-#include "../drivers/screen.h" 
 #include "../cpu/gdt.h" 
 #include "../cpu/idt.h" 
 #include "../cpu/timer.h" 
+#include "../libc/printf.h" 
 #include "../mm/paging.h" 
 #include "../drivers/tty.h" 
 
 kmain()
 {
-	//clear_screen(); 
+	clear_screen(); 
 	
-	print_with_color("\nThis is tty1.", rc_green); 
-	print_with_color("\nWelcome to Zed Operating System! ^_^", rc_red); 
-	print("\n"); 
+	printf_with_color(rc_black, rc_green, "This is tty1.\n"); 
+	printf_with_color(rc_black, rc_red, "Welcome to Zed Operating System! ^_^\n"); 
 
-	print("Initializing GDT. :P");  
+	printf("\nInitializing GDT ...\n");  
 	gdt_install();  
-	print("\nInitializing IDT. :P\n");  
+	printf("Initializing IDT ...\n");  
 	idt_install(); 
 
- 	//initialise_paging(); 
-	//print("\nSetup Paging over. :)\n");  
-	printf("\n%c--This is No.%d Test printf in address 0x%X.:)\n", 'Z', 1, 0xFFFFFFFF);  
-
+ 	initialise_paging(); 
+	printf("\nSetup Paging over. :)\n");  
+	
 	/* Test divide zero error interrupt */
 	//int i = 5/0; 
 
@@ -31,6 +29,12 @@ kmain()
 
  	/* Test for TTY and consoles */
 	task_tty(); 
+
+	/* Test divide zero error interrupt */
+	//int i = 5/0; 
+
+	/* Test printf function */
+	//printf("\n%s--This is No.%d Test printf in address 0x%X.:)\n", "Yep", 1, 0xFFFFFFFF);  
 
 
 	/* Test for timer */

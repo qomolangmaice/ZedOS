@@ -9,7 +9,7 @@
 #include "kheap.h" 
 #include "../libc/types.h" 
 #include "../cpu/irq.h" 
-#include "../drivers/screen.h" 
+//#include "../drivers/screen.h" 
 #include "../libc/printf.h" 
 
 /* The kernel's page directory */
@@ -96,7 +96,7 @@ void alloc_frame(page_t *page, int is_kernel, int is_writeable)
 			/* PANIC is just a macro that prints a message to 
 			 * the screen then hits an infinite loop
 			 */
-			print("No free frames!"); 
+			printf("No free frames!"); 
 		}
 		set_frame(index * 0x1000); 	/* This frame is now ours */ 
 		page->present = 1; 	 	 	/* Make it as present */ 
@@ -125,7 +125,7 @@ void free_frame(page_t *page)
 
 void initialise_paging() 
 {
-	print("Setup paging..."); 
+	printf("Setup paging..."); 
 	/* The size of physical memory. For moment we assume it is 16MB */
  	uint32 mem_end_page = 0x1000000; 
 
@@ -213,7 +213,7 @@ void page_fault(registers_t *regs)
 	int reserved = (regs->err_code) & 0x8; 	/* Overwriteen CPU-reserved bits of page entry */ 
 	int id = (regs->err_code) & 0x10;  	 	/* Casued by an instruction fetch */
 
- 	print("\nPage fault!\n"); 
+ 	//print("\nPage fault!\n"); 
 	/* Output an error message */
 	printf("Segmentation fault.(p: %d, rw: %d, user:%d, reserved: %d, id: %d)\n", present, rw, user, reserved);  
 }

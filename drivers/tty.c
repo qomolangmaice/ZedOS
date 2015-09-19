@@ -9,7 +9,7 @@
 #include "tty.h" 
 #include "console.h" 
 #include "keyboard.h" 
-#include "screen.h" 
+//#include "screen.h" 
 
 extern int nr_current_console; 
 

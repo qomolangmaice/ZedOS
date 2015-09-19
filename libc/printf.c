@@ -6,7 +6,8 @@
  *     Created: 2015年08月15日 星期六 23时18分43秒
  */
 #include "printf.h" 
-#include "../drivers/screen.h" 
+#include "varargs.h" 
+#include "../drivers/vga.h" 
 #include "types.h" 
 #include "string.h" 
 
@@ -23,10 +24,10 @@ void printf(const char *format, ...)
 	va_end(args); 
 	buff[i] = '\0'; 
 
-	print(buff); 
+	printk(buff); 
 }
 
-void printf_with_color(uint8 font_color, const char *format, ...) 
+void printf_with_color(real_color_t back, real_color_t fore, const char *format, ...) 
 {
 	static char buff[1024]; 
 	va_list args; 
@@ -37,7 +38,7 @@ void printf_with_color(uint8 font_color, const char *format, ...)
 	va_end(args); 
 	buff[i] = '\0'; 
 
-	print_with_color(buff, font_color); 
+	printk_with_color(buff, back, fore); 
 }
 
 #define is_digit(c)  	((c) >= '0' && (c) <= '9') 
@@ -173,7 +174,8 @@ static char *number(char *str, int num, int base, int size, int precision, int t
 static int vsprintf(char *buff, const char *format, va_list args) 
 {
  	int len, i; 
-	char *str, *s; 
+	char *str;  
+	char *s; 
 	int *ip; 
 
 	int flags;  	 	/* flags to is_number() */
@@ -262,7 +264,7 @@ static int vsprintf(char *buff, const char *format, va_list args)
 
 		case 's':
 			s = va_arg(args, char *);
-			len = str_len(s);
+			len = strlen(s);
 			if (precision < 0) {
 				precision = len;
 			} else if (len > precision) {
