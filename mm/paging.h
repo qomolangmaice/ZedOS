@@ -50,6 +50,7 @@ typedef struct page_directory
 /* Set up the enrionment, page directoryies etc and eableese paging */
 void initialise_paging(); 
 
+void print_directory(); 
 /* Causes the specified page directory to be loaded into the CR3 register. */
 void switch_page_directory(page_directory_t *dir); 
 

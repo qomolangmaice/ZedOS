@@ -20,15 +20,16 @@ kmain()
 
  	initialise_paging(); 
 	printf("\nSetup Paging over. :)\n");  
-	
+	print_directory(); 
+
 	/* Test divide zero error interrupt */
 	//int i = 5/0; 
 
 	//uint32 *ptr = (uint32 *)0xA0000000; 
 	//uint32 do_page_fault = *ptr; 
-
- 	/* Test for TTY and consoles */
-	task_tty(); 
+	
+	/* Test for TTY and consoles */
+	//task_tty(); 
 
 	/* Test divide zero error interrupt */
 	//int i = 5/0; 

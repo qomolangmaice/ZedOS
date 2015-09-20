@@ -146,10 +146,34 @@ void initialise_paging()
 	}
 
 	/* Before we enable paging, we must register our page fault handler */
-	register_interrupt_handler(14, page_fault); 
+	register_interrupt_handler(44, page_fault); 
 
 	/* Now enable paging */
 	switch_page_directory(kernel_directory); 
+}
+
+void print_directory() 
+{
+	asm volatile("cli"); 
+	printf(" ---- [k:0x%x u:0x%x]\n", kernel_directory, current_directory); 
+	uint32 i = 0; 
+	for (i = 0; i < 1024; ++i) 
+	{
+		if (!current_directory->tables[i] || (uint32)current_directory->tables[i] == (uint32)0xFFFFFFFF) 
+		{
+			continue; 
+		}
+		if (kernel_directory->tables[i] == current_directory->tables[i]) 
+		{
+			printf("  0x%x - kern [0x%x] %d\n", current_directory->tables[i], &current_directory->tables[i], i); 
+		}
+		else 
+		{
+			printf("  0x%x - user [0x%x] %d\n", current_directory->tables[i], &current_directory->tables[i], i); 
+		}
+	}
+	printf(" ---- [done]\n"); 
+	asm volatile("sti"); 
 }
 
 void switch_page_directory(page_directory_t *dir)

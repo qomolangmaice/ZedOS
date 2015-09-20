@@ -36,5 +36,7 @@ void idt_install()
 
 	/* points to the processor's internal register to the new IDT */
 	idt_load((uint32)idtp); 
+
+	memory_set(&interrupt_handlers, 0, sizeof(interrupt_handler_ptr)*256); 
 }
 
