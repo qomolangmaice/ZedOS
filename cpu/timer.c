@@ -13,7 +13,7 @@
 #include "../libc/types.h" 
 #include "../libc/printf.h" 
 
-void timer_callback(registers_t *regs)
+void timer_callback(registers_t regs)
 {
 	static uint32 tick = 0; 
  	printf("Tick: %d\n", tick++); 
@@ -22,7 +22,7 @@ void timer_callback(registers_t *regs)
 void init_timer(uint32 frequency)
 {
 	/* interrupt handler function about registe timer */ 
-	register_interrupt_handler(IRQ0, timer_callback); 
+	register_interrupt_handler(IRQ0, &timer_callback); 
 
  	/* Intel 8253/8254 PIT chip 
 	 * I/O port address: 0x40h ~ 0x43h 

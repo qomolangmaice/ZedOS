@@ -81,7 +81,7 @@ char *exception_messages[] = {
     "Reserved",
 }; 
 
-void isr_handler(registers_t *regs) 
+void isr_handler(registers_t regs) 
 {
 	/*
 	char s[3]; 
@@ -94,6 +94,13 @@ void isr_handler(registers_t *regs)
 	printk("\n"); 
 	*/ 
 
-	printf("received interrupt: [%d], %s\n", regs->int_no, exception_messages[regs->int_no]); 
+	if (interrupt_handlers[regs.int_no] != 0) 
+	{
+		interrupt_handler_ptr handler = interrupt_handlers[regs.int_no]; 
+		handler(regs); 
+	}
+	else {
+	 	printf("received interrupt: [%d], %s\n", regs.int_no, exception_messages[regs.int_no]); 
+	}
 }
 

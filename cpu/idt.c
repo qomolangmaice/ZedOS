@@ -28,6 +28,8 @@ void idt_install()
 	/* clear out the entire IDT, initializing it to zeros */
 	memory_set(&ENTRY(0), 0, sizeof(struct idt_entry_struct)*256); 
 
+	/* Remap the irq table */
+	irq_remap(); 
 	// setup Interrupt Service Routines, in isr.c 
 	isr_install(); 
 

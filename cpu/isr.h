@@ -11,9 +11,15 @@ typedef struct {
 	uint32 eip, cs, eflags, useresp, ss; 
 } registers_t; 
 
+/* This is a blank interrupt handler function pointer */
+/* registers_t is in 'isr.h' */
+typedef void (*interrupt_handler_ptr)(registers_t regs); 
+/* Interrupt handler function pointer array */
+interrupt_handler_ptr interrupt_handlers[256]; 
+
 void isr_install(); 
 // call interrupt handler function   
-void isr_handler(registers_t *regs); 
+void isr_handler(registers_t regs); 
 
 // declare interrupt handler function , 0-19 belongs to the error interrupt of CPU 
 // ISR: interrupt service routine 

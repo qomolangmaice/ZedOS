@@ -1,8 +1,8 @@
 
 ; 1.for interrupts without error code 
 %macro ISR_NOERRCODE 1 
-[GLOBAL isr%1] 	 	 	 	; %1 accesses the first parameter  
-isr%1:
+  global isr%1  	 	 	 	; %1 accesses the first parameter  
+  isr%1:
 	cli						; close down interrupts 
 	push byte 0				; push non-effective interrupt error code 
 	push byte %1			; push the number of interrupt 
@@ -11,8 +11,8 @@ isr%1:
 
 ; 2.for interrupts with error code 
 %macro ISR_ERRCODE 1
-[GLOBAL isr%1] 
-isr%1:
+  global isr%1 
+  isr%1:
 	cli 	 	 	 	 	; close down interrupts 
 	push byte %1 	 	 	; push the number of interrupt 
 	jmp isr_commom_stub 
@@ -58,7 +58,7 @@ ISR_NOERRCODE 31
 ; ISR_NOERRCODE 255 
 
 ; 4.Interrupt service handler 
-[extern isr_handler] 
+extern isr_handler 
 isr_commom_stub: 
 	pusha 	 	 	; Pushes edi, esi, ebp, ebx, edx, ecx, eax 
 	mov ax, ds 
@@ -69,21 +69,24 @@ isr_commom_stub:
 	mov es, ax 
 	mov fs, ax 
 	mov gs, ax 
-	mov ss, ax 
+	;mov ss, ax 
 
-	push esp  	 	; the value in 'esp' register is equal to the pointer of registers_t(in 'isr.c')  
+	;push esp  	 	; the value in 'esp' register is equal to the pointer of registers_t(in 'isr.c')  
+
 	call isr_handler 	; in other C code 
-	add esp, 4  	; clean parameters that has been pushed 
+
+	;add esp, 4  	; clean parameters that has been pushed 
 
 	pop ebx 	 	; recover the original data segment descriptor 
 	mov ds, bx 
 	mov es, bx 
 	mov fs, bx 
 	mov gs, bx 
-	mov ss, bx 
+	;mov ss, bx 
 
 	popa 	 	 	; Pops edi, esi, ebp, ebx, edx, ecx, eax 
 	add esp, 8 	 	; clean error code and ISR number in stack 
+
+	sti 
 	iret 	 	 	; Pop CS, EIP, EFLAGS, SS, ESP  
-.end: 
 

@@ -7,11 +7,11 @@
 
 ; Build interrupt request macro 
 %macro IRQ 2 
-[GLOBAL irq%1]
-	irq%1: 
+  global irq%1
+  irq%1: 
 	cli
-	push 0 
-	push %2 
+	push byte 0 
+	push byte %2 
 	jmp irq_common_stub 
 %endmacro 
 
@@ -32,8 +32,7 @@ IRQ  13,   45
 IRQ  14,   46	     	
 IRQ  15,   47	     	
 
-[GLOBAL irq_common_stub] 
-[EXTERN irq_handler] 
+extern irq_handler 
 irq_common_stub: 
 	pusha 	 	 	; Pushes edi, esi, ebp, ebx, edx, ecx, eax 
 	mov ax, ds 
@@ -44,21 +43,24 @@ irq_common_stub:
 	mov es, ax 
 	mov fs, ax 
 	mov gs, ax 
-	mov ss, ax 
+	;mov ss, ax 
 
-	push esp  	 	 ; the value in 'esp' register is equal to the pointer of registers_t(in 'isr.c')  
+	;push esp  	 	 ; the value in 'esp' register is equal to the pointer of registers_t(in 'isr.c')  
+
 	call irq_handler ; in other C code 
-	add esp, 4  	 ; clean parameters that has been pushed 
+
+	;add esp, 4  	 ; clean parameters that has been pushed 
 
 	pop ebx 	 	 ; recover the original data segment descriptor 
 	mov ds, bx 
 	mov es, bx 
 	mov fs, bx 
 	mov gs, bx 
-	mov ss, bx 
+	;mov ss, bx 
 
 	popa 	 	 	; Pops edi, esi, ebp, ebx, edx, ecx, eax 
 	add esp, 8 	 	; clean error code and ISR number in stack 
+
+	sti 
 	iret 	 	 	; Pop CS, EIP, EFLAGS, SS, ESP  
-.end: 
 

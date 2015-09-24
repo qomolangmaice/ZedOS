@@ -60,8 +60,6 @@ void irq_remap()
  */
 void irq_install()
 {
-	irq_remap(); 
-
 	idt_set_gate(32, (uint32)irq0, 0x08, 0x8E); 
 	idt_set_gate(33, (uint32)irq1, 0x08, 0x8E); 
 	idt_set_gate(34, (uint32)irq2, 0x08, 0x8E); 
@@ -87,14 +85,14 @@ void register_interrupt_handler(uint8 irq_no, interrupt_handler_ptr handler)
 }
 
 /* Interrupt handler function */
-void irq_handler(registers_t *regs)
+void irq_handler(registers_t regs)
 {
 	/*
 	 * If the IDT entry that was invoked was greater than 40 
 	 * (meaning IRQ8 - IRQ15), then we need to send an EOI to 
 	 * slave control chip 
 	 */ 
-	if(regs->int_no >= 40) 
+	if(regs.int_no >= 40) 
 		outportb(0xA0, 0x20); 
 
 	outportb(0x20, 0x20); 
@@ -103,7 +101,7 @@ void irq_handler(registers_t *regs)
 	/* void (*handler)(registers_t *regs); */  
 	interrupt_handler_ptr handler; 
 
- 	handler = interrupt_handlers[regs->int_no];  
+ 	handler = interrupt_handlers[regs.int_no];  
 
 	if(handler)
 	{

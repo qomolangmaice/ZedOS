@@ -8,7 +8,7 @@ Development environment:
 ------------------------
 
 ###Bochs
-If you want to simulate and debug you new OS, Bochs is good choice for you. 
+If you want to simulate and debug your new OS, Bochs is good choice for you. 
 You can compile and install it as follows: 
 ### 
         $ wget http://sourceforge.net/projects/bochs/files/bochs/2.6.8/bochs-2.6.8.tar.gz
@@ -22,17 +22,17 @@ You may use bochs before, of course you can install bochs like this:
 ### 
         $ sudo apt-get install bochs 
 
-There is no debug function and disassembly function in bochs by this method. So i recommend you compile bochs source code and install it
+There is no debug function and disassembly function in bochs by this method. So I recommend you compile bochs source code and install it
 
 ###Qemu
-Qemu is another choice for you to simulate you new OS, but it may contains some odd problems. you call install some softwares(In Ubuntu or Debian) as follows: 
+Qemu is another choice for you to simulate you new OS, but it may contains some odd problems. you need install softwares(In Ubuntu or Debian) as follows: 
 ###
 	 	$ sudo apt-get install xorriso gcc nasm qemu grub virtualbox
 
 
 If you want to compile this os and run it, here is the 
 
-steps:
+Steps:
 -----
 1. Compile and link all files. 
 ###

@@ -8,8 +8,6 @@
 
 kmain()
 {
-	clear_screen(); 
-	
 	printf_with_color(rc_black, rc_green, "This is tty1.\n"); 
 	printf_with_color(rc_black, rc_red, "Welcome to Zed Operating System! ^_^\n"); 
 
@@ -18,15 +16,17 @@ kmain()
 	printf("Initializing IDT ...\n");  
 	idt_install(); 
 
+	clear_screen(); 
+
  	initialise_paging(); 
 	printf("\nSetup Paging over. :)\n");  
-	print_directory(); 
+	//print_directory(); 
 
 	/* Test divide zero error interrupt */
 	//int i = 5/0; 
 
-	//uint32 *ptr = (uint32 *)0xA0000000; 
-	//uint32 do_page_fault = *ptr; 
+	uint32 *ptr = (uint32 *)0xA0000000; 
+	uint32 do_page_fault = *ptr; 
 	
 	/* Test for TTY and consoles */
 	//task_tty(); 

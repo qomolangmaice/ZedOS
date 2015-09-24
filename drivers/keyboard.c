@@ -37,7 +37,7 @@ static void set_leds();
 /*======================================================================*
                             keyboard_handler
  *======================================================================*/
-void keyboard_handler(registers_t *regs)
+void keyboard_handler(registers_t regs)
 {
 	uint8 scan_code = inportb(KB_INPUT_PORT);
 
@@ -79,7 +79,7 @@ void init_keyboard()
 	set_leds(); 
 
 	/* IRQ1 is the number of keyboard interrupt */
-	register_interrupt_handler(IRQ1, keyboard_handler);	/* Setup keyboard handler */
+	register_interrupt_handler(IRQ1, &keyboard_handler);	/* Setup keyboard handler */
 }
 
 /*======================================================================*

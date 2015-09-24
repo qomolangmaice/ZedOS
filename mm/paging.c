@@ -146,7 +146,7 @@ void initialise_paging()
 	}
 
 	/* Before we enable paging, we must register our page fault handler */
-	register_interrupt_handler(44, page_fault); 
+	register_interrupt_handler(14, page_fault); 
 
 	/* Now enable paging */
 	switch_page_directory(kernel_directory); 
@@ -223,7 +223,7 @@ page_t *get_page(uint32 address, int make, page_directory_t *dir)
 	}
 }
 
-void page_fault(registers_t *regs) 
+void page_fault(registers_t regs) 
 {
 	/* A page fault has occurred */
 	/* The faulting address is stored in the CR2 register */
@@ -231,13 +231,13 @@ void page_fault(registers_t *regs)
 	asm volatile("mov %%cr2, %0":  "=r" (faulting_address)); 
 
 	/* The error code gives us details of what happened */
-	int present = !((regs->err_code) & 0x1); 	/* Page not present */ 
-	int rw = (regs->err_code) & 0x2; 	 	 	/* Write operation ? */ 
-	int user = (regs->err_code) & 0x4; 	 	 	/* Processor wae in user-mode */ 
-	int reserved = (regs->err_code) & 0x8; 	/* Overwriteen CPU-reserved bits of page entry */ 
-	int id = (regs->err_code) & 0x10;  	 	/* Casued by an instruction fetch */
+	int present = !(regs.err_code & 0x1); 	/* Page not present */ 
+	int rw = regs.err_code & 0x2; 	 	 	/* Write operation ? */ 
+	int user = regs.err_code & 0x4; 	 	 	/* Processor wae in user-mode */ 
+	int reserved = regs.err_code & 0x8; 	/* Overwriteen CPU-reserved bits of page entry */ 
+	int id = regs.err_code & 0x10;  	 	/* Casued by an instruction fetch */
 
  	//print("\nPage fault!\n"); 
 	/* Output an error message */
-	printf("Segmentation fault.(p: %d, rw: %d, user:%d, reserved: %d, id: %d)\n", present, rw, user, reserved);  
+	printf("Segmentation fault.(p: %d, rw: %d, user:%d, reserved: %d, id: %d, faulting address at 0x%X)\n", present, rw, user, reserved, faulting_address);  
 }
