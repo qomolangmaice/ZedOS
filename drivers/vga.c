@@ -137,3 +137,43 @@ void printk_with_color(char *str, real_color_t back, real_color_t fore)
 		putc_color(*str++, back, fore); 
 }
 
+/* Print a hexadecimal */
+void print_hex(uint32 n) 
+{
+	int32 tmp; 
+
+	printk("0x"); 
+
+	char noZeroes = 1; 
+
+	int i; 
+	for (i = 28; i > 0; i -= 4) 
+	{
+		tmp = (n >> i) & 0xF; 
+		if (tmp == 0 && noZeroes != 0) 
+		{
+			continue; 
+		}
+
+		if (tmp >= 0xA) 
+		{
+			noZeroes = 0; 
+			putc_color(tmp - 0xA + 'a', rc_black, rc_white); 
+		}
+		else 
+		{
+			noZeroes = 0; 
+			putc_color(tmp + '0', rc_black, rc_white); 
+		}
+	}
+
+	tmp = n & 0xF; 
+	if (tmp >= 0xA) 
+	{
+		putc_color(tmp - 0xA + 'a', rc_black, rc_white); 
+	}
+	else 
+	{
+		putc_color(tmp + '0', rc_black, rc_white); 
+	}
+}

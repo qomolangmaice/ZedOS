@@ -125,7 +125,7 @@ void free_frame(page_t *page)
 
 void initialise_paging() 
 {
-	printf("Setup paging..."); 
+	printf("\nSetup paging...\n"); 
 	/* The size of physical memory. For moment we assume it is 16MB */
  	uint32 mem_end_page = 0x1000000; 
 
@@ -228,16 +228,28 @@ void page_fault(registers_t regs)
 	/* A page fault has occurred */
 	/* The faulting address is stored in the CR2 register */
 	uint32 faulting_address; 
-	asm volatile("mov %%cr2, %0":  "=r" (faulting_address)); 
+	asm volatile("mov %%cr2, %0" : "=r" (faulting_address)); 
 
 	/* The error code gives us details of what happened */
 	int present = !(regs.err_code & 0x1); 	/* Page not present */ 
 	int rw = regs.err_code & 0x2; 	 	 	/* Write operation ? */ 
-	int user = regs.err_code & 0x4; 	 	 	/* Processor wae in user-mode */ 
+	int user = regs.err_code & 0x4;  	 	/* Processor was in user-mode? */ 
 	int reserved = regs.err_code & 0x8; 	/* Overwriteen CPU-reserved bits of page entry */ 
 	int id = regs.err_code & 0x10;  	 	/* Casued by an instruction fetch */
 
  	//print("\nPage fault!\n"); 
 	/* Output an error message */
-	printf("Segmentation fault.(p: %d, rw: %d, user:%d, reserved: %d, id: %d, faulting address at 0x%X)\n", present, rw, user, reserved, faulting_address);  
+	printf("\nPage fault: \n");  
+	if (present) 
+		printf(" 	present\n"); 
+	if (rw) 
+		printf(" 	read-only\n"); 
+	if (user) 
+		printf(" 	user-mode\n"); 
+	if (reserved) 
+		printf(" 	reserved\n"); 
+	printf(" 	Faulting address: "); 
+	print_hex(faulting_address); 
+	printf("\n"); 
+	for(;;); 	/* Halt by going into an infite loop */ 
 }

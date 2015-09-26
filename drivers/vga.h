@@ -7,6 +7,7 @@
  */
 #ifndef VGA_H 
 #define VGA_H 
+#include "../libc/types.h" 
 
 typedef 
 enum real_color 
@@ -37,4 +38,5 @@ void printk(char *str);
 
 void printk_with_color(char *str, real_color_t back, real_color_t fore); 
 
+void print_hex(uint32 n); 
 #endif 
