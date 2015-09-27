@@ -47,6 +47,9 @@ typedef struct page_directory
 	uint32 physical_address; 	 	/* The physical address of physical_tables */ 
 } page_directory_t; 
 
+unsigned short memory_use(); 
+unsigned short memory_total(); 
+
 /* Set up the enrionment, page directoryies etc and eableese paging */
 void initialise_paging(); 
 

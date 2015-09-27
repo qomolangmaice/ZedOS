@@ -123,6 +123,29 @@ void free_frame(page_t *page)
 	}
 }
 
+unsigned short memory_use() 
+{
+	unsigned short ret = 0; 
+	uint32 i, j; 
+	for (i = 0; i < INDEX_FROM_BIT(nframes); ++i) 
+	{
+		for (j = 0; j < 32; ++j) 
+	 	{
+			uint32 testFrame = 0x1 << j; 
+			if (frames[i] & testFrame) 
+			{
+				ret++; 
+			}
+		}
+	}
+	return ret * 4; 
+}
+
+unsigned short memory_total() 
+{
+	return nframes * 4; 
+}
+
 void initialise_paging() 
 {
 	printf("\nSetup paging...\n"); 
@@ -150,6 +173,9 @@ void initialise_paging()
 
 	/* Now enable paging */
 	switch_page_directory(kernel_directory); 
+
+	printf("\nMemory use: %d\n", memory_use()); 
+	printf("\nMemory total: %d\n", memory_total()); 
 }
 
 void print_directory() 
