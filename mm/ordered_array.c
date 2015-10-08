@@ -1,6 +1,6 @@
 /*
  *     File Name: ordered_array.c
- *     Description: Implementation for creating, inserting and deleting 	 	 	 	   from ordered arrays.  
+ *     Description: Implementation for creating, inserting and deleting from ordered arrays.  
  *     Author: iczelion
  *     Email: qomolangmaice@163.com 
  *     Created: 2015.09.27 22:50:42

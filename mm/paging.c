@@ -11,6 +11,7 @@
 #include "../cpu/irq.h" 
 //#include "../drivers/screen.h" 
 #include "../libc/printf.h" 
+#include "../libc/system.h" 
 
 /* The kernel's page directory */
 page_directory_t *kernel_directory = 0; 
@@ -24,6 +25,7 @@ uint32 nframes;
 
 /* Defined in kheap.c */
 extern uint32 placement_address; 
+extern heap_t *kheap; 
 
 /* Macros used in the bitset algorithms.  */
 #define INDEX_FROM_BIT(a) 	(a / (8 * 4)) 
@@ -158,24 +160,49 @@ void initialise_paging()
 
 	/* Let's make a page directory */
 	kernel_directory = (page_directory_t*)kmalloc_a(sizeof(page_directory_t)); 
+	memory_set(kernel_directory, 0, sizeof(page_directory_t)); 
 	current_directory = kernel_directory; 
 
+	/* Map some pages in the kernel heap area. 
+	 * Here we call get_page but not alloc_frames yet because
+	 * they need to be indentity mapped first below, and yet we can't increase 
+	 * placement_address between indentity mapping and enabling the heap! */
 	int i = 0; 
-	while(i < placement_address) 
+	for (i = KHEAP_START; i < KHEAP_START + KHEAP_INITIAL_SIZE; i += 0x1000)
+		get_page(i, 1, kernel_directory); 
+
+	/* We need to indentity map (phys addr = virt addr) from 
+	 * 0x0 to the end of used memory, so we can access this 
+	 * transparently, as if paging wasn't enabled. 
+	 * NOTE that we use a while loop here enabled deliberately. 
+	 * inside the loop body we actually change placement_address 
+	 * by calling kmalloc(). A while loop causes this to be 
+	 * computed on-the-fly rather than once at the start. 
+	 * Allocate a little bit extra so the kernel heap can be 
+	 * inititialise properly. */
+	i = 0; 
+	while(i < placement_address + 0x1000) 
 	{
 		/* Kernel code is readable but not writebable from userspace */
-		alloc_frame(get_page(i, 1, kernel_directory), 0, 0); 
+		alloc_frame( get_page(i, 1, kernel_directory), 0, 0); 
 		i += 0x1000; 
 	}
 
+	/* Now allocate those pages we mapped earlier. */
+	for (i = KHEAP_START; i < KHEAP_START + KHEAP_INITIAL_SIZE; i += 0x1000) 
+		alloc_frame(get_page(i, 1, kernel_directory), 0, 0); 
+	
 	/* Before we enable paging, we must register our page fault handler */
 	register_interrupt_handler(14, page_fault); 
 
 	/* Now enable paging */
 	switch_page_directory(kernel_directory); 
 
-	printf("\nMemory use: %d\n", memory_use()); 
-	printf("\nMemory total: %d\n", memory_total()); 
+	/* Initialise the kernel page. */
+	kheap = create_heap(KHEAP_START, KHEAP_START + KHEAP_INITIAL_SIZE, 0xCFFFF000, 0, 0); 
+
+	//printf("\nMemory use: %d\n", memory_use()); 
+	//printf("\nMemory total: %d\n", memory_total()); 
 }
 
 void print_directory() 
@@ -277,5 +304,5 @@ void page_fault(registers_t regs)
 	printf(" 	Faulting address: "); 
 	print_hex(faulting_address); 
 	printf("\n"); 
-	for(;;); 	/* Halt by going into an infite loop */ 
+	PANIC("Page fault"); 
 }

@@ -137,6 +137,18 @@ void printk_with_color(char *str, real_color_t back, real_color_t fore)
 		putc_color(*str++, back, fore); 
 }
 
+/* Print an array */
+void print_array(char *c) 
+{
+	int i = 0; 
+	while (c[i]) 
+	{
+		putc_color(c[i++], rc_black, rc_white); 
+	}
+}
+
+
+
 /* Print a hexadecimal */
 void print_hex(uint32 n) 
 {
@@ -176,4 +188,33 @@ void print_hex(uint32 n)
 	{
 		putc_color(tmp + '0', rc_black, rc_white); 
 	}
+}
+
+void print_dec(uint32 n) 
+{
+	if (n == 0) 
+	{
+		putc_color('0', rc_black, rc_white); 
+		return; 
+	}
+
+	int32 acc = n; 
+	char c[32]; 
+	int i = 0;  
+	while (acc > 0) 
+	{
+		c[i] = '0' + acc % 10; 
+		acc /= 10; 
+		i++; 
+	}
+	c[i] = 0; 
+
+	char c2[32]; 
+	c2[i--] = 0; 
+	int j = 0; 
+	while(i >= 0) 
+	{
+		c2[i--] = c[j++]; 
+	}
+	print_array(c2); 
 }

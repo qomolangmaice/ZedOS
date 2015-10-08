@@ -10,12 +10,12 @@ HEADERS = $(wildcard cpu/*.h drivers/*.h libc/*.h mm/*.h)
 OBJECTS = $(S_OBJECTS) $(C_OBJECTS)    
 
 CC = /usr/bin/gcc 
-CFLAGS = -m32 -c   
+CFLAGS = -m32 -c  
 
 LDFLAGS = -m elf_i386 -T link.ld -o   
 
 AS = /usr/bin/nasm 
-ASFLAGS = -f elf32       
+ASFLAGS = -f elf32  
 
 all: kernel.bin  
 
