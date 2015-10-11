@@ -1,0 +1,30 @@
+#
+#    File Name: Makefile.callgraph  
+#    Description: Use callgraph to generate calling function connections  
+#    Author: iczelion
+#    Email: qomolangmaice@163.com 
+#   Created: 2015.10.11 21:50:19
+
+# Makefile for callgraph generation 
+CG := tools/callgraph 
+
+# f: function 
+# d: directory or file 
+# b: callgraph picture displayer 
+
+ifeq ($(f),)
+	f = kmain 
+endif 
+
+ifeq ($(d),) 
+	d = ./ 
+endif 
+
+# You can select your web browser to replace 'google-chrome'  
+ifeq ($(b),) 
+	b = google-chrome 
+endif 
+
+cg:
+	$(CG) -f $(f) -d $(d) -b $(b) -D 5 
+

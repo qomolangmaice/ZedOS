@@ -7,6 +7,8 @@
 #include "../mm/kheap.h" 
 #include "../drivers/tty.h" 
 
+void kmain(); 
+
 kmain()
 {
 	clear_screen(); 
@@ -25,7 +27,7 @@ kmain()
 	//print_directory(); 
 	uint32 b = kmalloc(8); 
 	uint32 c = kmalloc(8); 
-	printf("a: "); 
+	printf("\na: "); 
 	print_hex(a); 
 	printf(", b: "); 
 	print_hex(b); 
@@ -46,7 +48,7 @@ kmain()
 	//uint32 do_page_fault = *ptr; 
 
 	/* Test for TTY and consoles */
-	//task_tty(); 
+	task_tty(); 
 
 
 	/* Test divide zero error interrupt */

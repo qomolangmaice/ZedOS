@@ -79,6 +79,7 @@ uint32 kmalloc(uint32 sz)
 
 static void expand(uint32 new_size, heap_t *heap) 
 {
+	/* Sanity check */
  	ASSERT(new_size > heap->end_address - heap->start_address); 
 
 	/* Get the nearest following page boundary. */

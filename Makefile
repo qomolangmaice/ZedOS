@@ -41,6 +41,9 @@ bochs-run: kernel.bin
 	sudo umount /mnt/floppy
 	bochs -f bochsrc  
 
+# For Callgraph generation 
+include Makefile.callgraph 
+
 # There is always some bugs by this method 
 qemu_iso_run: ZedOS.iso  
 	qemu-system-i386 ZedOS.iso    
@@ -51,4 +54,4 @@ qemu_bin_run: kernel.bin
 
 clean:
 #rm -rf $(OBJECTS) kernel.bin ZedOS.iso   
-	rm -rf $(OBJECTS) kernel.bin ZedOS.iso   
+	rm -rf $(OBJECTS) kernel.bin ZedOS.iso *.svg  
