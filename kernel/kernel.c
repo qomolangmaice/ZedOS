@@ -7,7 +7,7 @@
 #include "../mm/kheap.h" 
 #include "../drivers/tty.h" 
 
-void kmain(); 
+void test_kmalloc(); 
 
 kmain()
 {
@@ -21,24 +21,12 @@ kmain()
 	printf("Initializing IDT ...\n");  
 	idt_install(); 
 
-	uint32 a = kmalloc(8); 
+	//uint32 a = kmalloc(8); 
  	initialise_paging(); 
 	printf("\nSetup Paging over. :)\n");  
 	//print_directory(); 
-	uint32 b = kmalloc(8); 
-	uint32 c = kmalloc(8); 
-	printf("\na: "); 
-	print_hex(a); 
-	printf(", b: "); 
-	print_hex(b); 
-	printf("\nc: "); 
-	print_hex(c); 
-
-	kfree(c); 
-	kfree(b); 
-	uint32 d = kmalloc(12); 
-	printf(", d: "); 
-	print_hex(d); 
+	
+	test_kmalloc(); 
 
 	/* Test divide zero error interrupt */
 	//int i = 5/0; 
@@ -68,3 +56,21 @@ kmain()
 	return 0; 
 }
 
+void test_kmalloc() 
+{
+	uint32 a = kmalloc(8); 
+	uint32 b = kmalloc(8); 
+	uint32 c = kmalloc(8); 
+	printf("\na: "); 
+	print_hex(a); 
+	printf(", b: "); 
+	print_hex(b); 
+	printf("\nc: "); 
+	print_hex(c); 
+
+	kfree(c); 
+	kfree(b); 
+	uint32 d = kmalloc(12); 
+	printf(", d: "); 
+	print_hex(d); 
+}
