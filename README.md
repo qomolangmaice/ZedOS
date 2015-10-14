@@ -34,6 +34,17 @@ You need install softwares(In Ubuntu or Debian) as follows:
 ###
 	 	$ sudo apt-get install xorriso gcc nasm grub virtualbox cflow graphviz   
 
+###Softeware brief introductions: 	
+xorriso--- Copy kernel.bin to ZedOS.iso 
+gcc --- C compiler 
+nasm --- Assembly compiler 
+grub --- Bootloader 
+virtualbox --- Virtual machine 
+cflow --- Draw C programs flow 
+graphviz(include 'dot') --- graphic visualization 
+callgraph --- Generate call function connections in graph 
+
+
 If you want to compile this os and run it, here is the 
 
 Steps:

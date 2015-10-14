@@ -27,4 +27,5 @@ endif
 
 cg:
 	$(CG) -f $(f) -d $(d) -b $(b) -D 5 
+	mv *.svg callgraph/  
 
