@@ -2,10 +2,10 @@
 S_SOURCES = $(wildcard boot/*.s) 
 S_OBJECTS = $(S_SOURCES:.s=.o) 
 
-C_SOURCES = $(wildcard kernel/*.c cpu/*.c drivers/*.c libc/*.c mm/*.c) 
+C_SOURCES = $(wildcard kernel/*.c cpu/*.c drivers/*.c libc/*.c mm/*.c fs/*.c) 
 C_OBJECTS = $(C_SOURCES:.c=.o) 
 
-HEADERS = $(wildcard cpu/*.h drivers/*.h libc/*.h mm/*.h) 
+HEADERS = $(wildcard cpu/*.h drivers/*.h libc/*.h mm/*.h fs/*.h) 
 
 OBJECTS = $(S_OBJECTS) $(C_OBJECTS)    
 
