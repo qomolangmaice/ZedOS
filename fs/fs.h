@@ -37,7 +37,8 @@ typedef struct fs_node
 	uint32 mask; 	 	/* The permission mask. */
 	uint32 uid; 	 	/* The owning user. */
 	uint32 gid; 	 	/* The owning group. */
-	uint32 flags; 	 	/* This is device-specific - povides a way for a filesystem to indetify files. */
+	uint32 flags; 	 	/* Includes the node type. See #define above.*/
+	uint32 inode; 	 	/* This is device-specific - povides a way for a filesystem to indetify files. */
 	uint32 length; 	 	/* Size of the file, in bytes.  */
 	uint32 impl; 	 	/* An implementation-defined numbwe. */
 	read_type_t read; 
