@@ -10,6 +10,24 @@ void memory_set(void *dest, uint8 val, uint32 len)
 	}
 }
 
+/* Copy len bytes from src to dest. */
+void memcpy(uint8 *dest, const uint8 *src, uint32 len) 
+{
+	const uint8 *sp = (const uint8 *)src;
+	uint8 *dp = (uint8 *)dest; 
+	for(; len != 0; len--) 
+		*dp++ = *sp++; 
+}
+
+/* Copy the NULL-terminated string src into dest, and return dest. */
+char *strcpy(char *dest, const char *src)
+{
+	do
+	{
+		*dest++ = *src++; 
+	} while (*src != 0); 	
+}
+
 /** 
  * K&R implementation          
  */

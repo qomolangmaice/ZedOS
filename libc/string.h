@@ -3,7 +3,11 @@
 
 #include "types.h" 
 
-void memory_set(void *dest, uint8 val, uint32 len);  
+void memory_set(void *dest, uint8 val, uint32 len); 
+
+void memcpy(uint8 *dest, const uint8 *src, uint32 len);  
+
+char *strcpy(char *dest, const char *src);  
 
 uint16 str_len(string ch);  
 
