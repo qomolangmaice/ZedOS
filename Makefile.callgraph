@@ -3,7 +3,10 @@
 #    Description: Use callgraph to generate calling function connections  
 #    Author: iczelion
 #    Email: qomolangmaice@163.com 
-#   Created: 2015.10.11 21:50:19
+#    Created: 2015.10.11 21:50:19
+#    Use: make cg f=<function name> 
+#    Notes: Before using callgraph, you need install some extra softwares as follows: 
+#    	 	$ sudo apt-get install cflow graphviz 
 
 # Makefile for callgraph generation 
 CG := tools/callgraph 
